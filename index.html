@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Tienda online con productos destacados.">
+    <title>Mi Tienda | E-commerce</title>
+</head>
+<body>
+    <header>
+        <a href="index.html" aria-label="Ir al inicio">
+            <img src="assets/img/logo.png" alt="Logo de Mi Tienda" width="60" height="60">
+        </a>
+        <h1>Mi Tienda</h1>
+        <nav aria-label="Navegación principal">
+            <ul>
+                <li><a href="index.html">Inicio</a></li>
+                <li><a href="#">Productos</a></li>
+                <li><a href="#">Ofertas</a></li>
+                <li><a href="#">Contacto</a></li>
+            </ul>
+        </nav>
+        <form role="search" aria-label="Buscar productos">
+            <input type="search" name="busqueda" placeholder="Buscar productos..." aria-label="Buscar">
+            <button type="submit">Buscar</button>
+        </form>
+    </header>
+
+    <main>
+        <section id="productos-destacados" aria-labelledby="titulo-destacados">
+            <h2 id="titulo-destacados">Productos destacados</h2>
+
+            <aside aria-label="Filtros de productos">
+                <h3>Filtros</h3>
+                <form>
+                    <fieldset>
+                        <legend>Categoría</legend>
+                        <label><input type="checkbox" name="categoria" value="electronica"> Electrónica</label>
+                        <label><input type="checkbox" name="categoria" value="ropa"> Ropa</label>
+                        <label><input type="checkbox" name="categoria" value="hogar"> Hogar</label>
+                    </fieldset>
+
+                    <label for="precio-max">Precio máximo</label>
+                    <input type="range" id="precio-max" name="precio-max" min="0" max="100000" step="1000" value="50000">
+
+                    <label for="orden">Ordenar por</label>
+                    <select id="orden" name="orden">
+                        <option value="relevancia">Relevancia</option>
+                        <option value="precio-asc">Precio: menor a mayor</option>
+                        <option value="precio-desc">Precio: mayor a menor</option>
+                    </select>
+
+                    <button type="submit">Aplicar filtros</button>
+                </form>
+            </aside>
+
+            <ul>
+                <li>
+                    <article>
+                        <h3>Producto 1</h3>
+                        <img src="assets/img/producto1.jpg" alt="Imagen del Producto 1" width="200" height="200">
+                        <p>Descripción breve del producto 1.</p>
+                        <p>$49.999</p>
+                        <button type="button">Agregar al carrito</button>
+                    </article>
+                </li>
+                <li>
+                    <article>
+                        <h3>Producto 2</h3>
+                        <img src="assets/img/producto2.jpg" alt="Imagen del Producto 2" width="200" height="200">
+                        <p>Descripción breve del producto 2.</p>
+                        <p>$39.999</p>
+                        <button type="button">Agregar al carrito</button>
+                    </article>
+                </li>
+                <li>
+                    <article>
+                        <h3>Producto 3</h3>
+                        <img src="assets/img/producto3.jpg" alt="Imagen del Producto 3" width="200" height="200">
+                        <p>Descripción breve del producto 3.</p>
+                        <p>$59.999</p>
+                        <button type="button">Agregar al carrito</button>
+                    </article>
+                </li>
+            </ul>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Mi Tienda. Todos los derechos reservados.</p>
+        <nav aria-label="Enlaces legales y de ayuda">
+            <ul>
+                <li><a href="#">Términos y condiciones</a></li>
+                <li><a href="#">Política de privacidad</a></li>
+                <li><a href="#">Medios de pago</a></li>
+                <li><a href="#">Envíos</a></li>
+            </ul>
+        </nav>
+    </footer>
+</body>
+</html>
