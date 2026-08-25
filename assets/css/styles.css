@@ -142,6 +142,11 @@ header {
     gap: 1rem;
 }
 
+#catalogo li > a {
+    display: block;
+    color: inherit;
+}
+
 #catalogo article {
     display: flex;
     flex-direction: column;
@@ -202,6 +207,216 @@ header {
 #catalogo button:hover,
 #catalogo button:focus {
     background-color: var(--verde-oscuro);
+}
+
+/* ---------- Detalle de producto ---------- */
+#detalle-producto {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 1rem;
+}
+
+.breadcrumb ol {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 0.5rem;
+    margin-bottom: 1.25rem;
+    font-size: 0.85rem;
+}
+
+.breadcrumb li:not(:last-child)::after {
+    content: "/";
+    margin-left: 0.5rem;
+    color: var(--rosa-claro);
+}
+
+.breadcrumb a {
+    font-weight: 600;
+    color: var(--verde-oscuro);
+}
+
+.breadcrumb a:hover {
+    color: var(--bordo-oscuro);
+}
+
+.breadcrumb [aria-current="page"] {
+    color: var(--bordo-oscuro);
+    font-weight: 700;
+}
+
+#detalle-producto > article {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+    background-color: #fff;
+    border: 2px solid var(--rosa-claro);
+    border-radius: 12px;
+    padding: 1.5rem;
+}
+
+#detalle-producto > article > img {
+    width: 100%;
+    max-width: 320px;
+    height: auto;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    border-radius: 8px;
+    background-color: var(--rosa-claro);
+}
+
+.detalle-info {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.detalle-info h1 {
+    font-size: 1.5rem;
+    color: var(--bordo-oscuro);
+}
+
+.detalle-info .precio {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--bordo-oscuro);
+    margin: 0.5rem 0;
+}
+
+.detalle-info .descripcion {
+    margin-bottom: 1rem;
+}
+
+.caracteristicas {
+    list-style: none;
+    margin-bottom: 1rem;
+}
+
+.caracteristicas li::before {
+    content: "• ";
+    color: var(--rosa-claro);
+    font-weight: 700;
+}
+
+.stock {
+    font-weight: 600;
+    color: var(--verde-oscuro);
+    margin-bottom: 1rem;
+}
+
+.detalle-info form {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.detalle-info label {
+    font-weight: 600;
+}
+
+.detalle-info input[type="number"] {
+    width: 70px;
+    padding: 0.45rem;
+    border: 2px solid var(--bordo-oscuro);
+    border-radius: 8px;
+    font-size: 1rem;
+}
+
+.detalle-info form button {
+    padding: 0.5rem 1.5rem;
+    border: none;
+    border-radius: 8px;
+    background-color: var(--bordo-oscuro);
+    color: #fff;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.detalle-info form button:hover,
+.detalle-info form button:focus {
+    background-color: var(--verde-oscuro);
+}
+
+/* ---------- Productos relacionados ---------- */
+#relacionados {
+    margin-top: 2rem;
+}
+
+#relacionados h2 {
+    text-align: center;
+    font-size: 1.3rem;
+    color: var(--bordo-oscuro);
+    margin-bottom: 1rem;
+}
+
+#relacionados ul {
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 1rem;
+}
+
+#relacionados article {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    background-color: #fff;
+    border: 2px solid var(--rosa-claro);
+    border-radius: 12px;
+    padding: 1rem;
+    height: 100%;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+#relacionados article:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 6px 14px rgba(94, 7, 35, 0.35);
+}
+
+#relacionados h3 {
+    font-size: 1rem;
+    color: var(--verde-oscuro);
+}
+
+#relacionados img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    border-radius: 8px;
+    background-color: var(--rosa-claro);
+}
+
+#relacionados p {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--bordo-oscuro);
+    margin: 0.35rem 0;
+}
+
+#relacionados a {
+    font-weight: 600;
+    color: var(--bordo-oscuro);
+}
+
+#relacionados a:hover,
+#relacionados a:focus {
+    text-decoration: underline;
+}
+
+@media (min-width: 600px) {
+    #detalle-producto > article {
+        flex-direction: row;
+        align-items: flex-start;
+    }
+
+    .detalle-info h1 {
+        font-size: 2rem;
+    }
 }
 
 /* ---------- Footer ---------- */
