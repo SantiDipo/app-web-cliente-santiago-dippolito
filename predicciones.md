@@ -5,3 +5,4 @@ Predicciones
 4- Agrego carrito.html para ser accedido desde el index.html al tocar sobre carrito o agregar carrito.
 6- Agrego nuevo-producto.html para ingresar nuevos productos a la API
 7- Ajusto imagenes en index y producto para mejora estetica.  
+8- Agrego contacto.html para ser accedido desde index.html al tocar la seccion de contacto.
