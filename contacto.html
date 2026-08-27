@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Formulario para crear un nuevo producto en Accesorios Shop.">
-    <title>Nuevo producto | Accesorios Shop</title>
+    <meta name="description" content="Contactate con Accesorios Shop para consultas, sugerencias o pedidos especiales.">
+    <title>Contacto | Accesorios Shop</title>
     <link rel="stylesheet" href="assets/css/styles.css">
 </head>
 <body>
@@ -18,45 +18,44 @@
                 <li><a href="index.html">Inicio</a></li>
                 <li><a href="#">Productos</a></li>
                 <li><a href="#">Ofertas</a></li>
-                <li><a href="contacto.html">Contacto</a></li>
+                <li><a class="activo" href="contacto.html" aria-current="page">Contacto</a></li>
                 <li><a href="carrito.html">Carrito</a></li>
             </ul>
         </nav>
     </header>
 
-    <main id="nuevo-producto">
+    <main id="contacto">
         <nav class="breadcrumb" aria-label="Ruta de navegación">
             <ol>
                 <li><a href="index.html">Inicio</a></li>
-                <li><a href="#">Productos</a></li>
-                <li aria-current="page">Nuevo producto</li>
+                <li aria-current="page">Contacto</li>
             </ol>
         </nav>
 
-        <h1>Crear nuevo producto</h1>
+        <h1>Contactanos</h1>
 
-        <form action="#" method="post" enctype="multipart/form-data">
+        <form action="#" method="post">
             <div class="campo">
-                <label for="nombre">Nombre del producto</label>
-                <input type="text" id="nombre" name="nombre" placeholder="Ej: Reloj clásico" required>
+                <label for="nombre">Nombre</label>
+                <input type="text" id="nombre" name="nombre" placeholder="Ej: María García" autocomplete="name" required>
             </div>
 
             <div class="campo">
-                <label for="descripcion">Descripción</label>
-                <textarea id="descripcion" name="descripcion" rows="4" placeholder="Describe las características del producto..." required></textarea>
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" placeholder="Ej: maria@correo.com" autocomplete="email" required>
             </div>
 
             <div class="campo">
-                <label for="precio">Precio</label>
-                <input type="number" id="precio" name="precio" min="0" step="0.01" placeholder="Ej: 49999.99" required>
+                <label for="telefono">Teléfono</label>
+                <input type="tel" id="telefono" name="telefono" placeholder="Ej: 11 4567 8901" autocomplete="tel" required>
             </div>
 
             <div class="campo">
-                <label for="imagen">Imagen del producto</label>
-                <input type="file" id="imagen" name="imagen" accept="image/*" required>
+                <label for="mensaje">Mensaje</label>
+                <textarea id="mensaje" name="mensaje" rows="5" placeholder="Escribí tu consulta o mensaje..." required></textarea>
             </div>
 
-            <button type="submit">Crear producto</button>
+            <button type="submit">Enviar mensaje</button>
         </form>
     </main>
 

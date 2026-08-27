@@ -597,6 +597,90 @@ header {
     text-decoration: underline;
 }
 
+/* ---------- Formulario de contacto ---------- */
+#contacto {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 1rem;
+}
+
+#contacto h1 {
+    font-size: 1.5rem;
+    color: var(--bordo-oscuro);
+    text-align: center;
+    margin-bottom: 1.25rem;
+}
+
+#contacto form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    background-color: #fff;
+    border: 2px solid var(--rosa-claro);
+    border-radius: 12px;
+    padding: 1.5rem;
+}
+
+#contacto .campo {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+}
+
+#contacto label {
+    font-weight: 600;
+    color: var(--verde-oscuro);
+}
+
+#contacto input[type="text"],
+#contacto input[type="email"],
+#contacto input[type="tel"],
+#contacto textarea {
+    padding: 0.55rem 0.75rem;
+    border: 2px solid var(--bordo-oscuro);
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-family: inherit;
+    color: var(--verde-oscuro);
+    background-color: var(--blanco);
+}
+
+#contacto textarea {
+    resize: vertical;
+}
+
+#contacto input:focus,
+#contacto textarea:focus {
+    outline: none;
+    border-color: var(--verde-oscuro);
+    box-shadow: 0 0 0 3px rgba(228, 159, 182, 0.4);
+}
+
+#contacto button[type="submit"] {
+    align-self: center;
+    width: 100%;
+    padding: 0.65rem;
+    border: none;
+    border-radius: 8px;
+    background-color: var(--bordo-oscuro);
+    color: #fff;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+#contacto button[type="submit"]:hover,
+#contacto button[type="submit"]:focus {
+    background-color: var(--verde-oscuro);
+}
+
+@media (min-width: 600px) {
+    #contacto h1 {
+        font-size: 2rem;
+    }
+}
+
 /* ---------- Formulario de nuevo producto ---------- */
 #nuevo-producto {
     max-width: 600px;
