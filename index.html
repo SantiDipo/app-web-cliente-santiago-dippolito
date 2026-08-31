@@ -11,6 +11,18 @@
     <header>
         <img class="logo" src="assets/img/2.png" alt="Logo de Accesorios Shop" width="48" height="48">
 
+        <form id="filtro-categorias" aria-label="Filtrar por categoría">
+            <label for="categoria">Categoría</label>
+            <select id="categoria" name="categoria">
+                <option value="todas">Todas</option>
+                <option value="relojes">Relojes</option>
+                <option value="bolsos">Bolsos</option>
+                <option value="gorras">Gorras</option>
+                <option value="lentes">Lentes de sol</option>
+                <option value="joyeria">Joyería</option>
+            </select>
+        </form>
+
         <nav class="navbar" aria-label="Navegación principal">
             <ul>
                 <li><a href="index.html">Inicio</a></li>
@@ -22,23 +34,15 @@
         </nav>
     </header>
 
-    <main>
-        <section id="filtro-categorias" aria-labelledby="titulo-filtro">
-            <h2 id="titulo-filtro">Categorías</h2>
-            <form aria-label="Filtrar por categoría">
-                <label for="categoria">Filtrar por categoría</label>
-                <select id="categoria" name="categoria">
-                    <option value="todas">Todas</option>
-                    <option value="relojes">Relojes</option>
-                    <option value="bolsos">Bolsos</option>
-                    <option value="gorras">Gorras</option>
-                    <option value="lentes">Lentes de sol</option>
-                    <option value="joyeria">Joyería</option>
-                </select>
-                <button type="submit">Aplicar</button>
-            </form>
-        </section>
+    <div id="galeria-fotos" aria-label="Galería de fotografías decorativa">
+        <div class="fotos">
+            <img src="https://images.unsplash.com/photo-1777457900943-7fd2f7c42529?q=85&fm=jpg&crop=entropy&cs=srgb&w=800" alt="Reloj clásico">
+            <img src="https://images.unsplash.com/photo-1598532163257-ae3c6b2524b6?q=85&fm=jpg&crop=entropy&cs=srgb&w=800" alt="Bolso de mano">
+            <img src="https://images.unsplash.com/photo-1588850561407-ed78c282e89b?q=85&fm=jpg&crop=entropy&cs=srgb&w=800" alt="Gorra deportiva">
+        </div>
+    </div>
 
+    <main>
         <section id="catalogo" aria-labelledby="titulo-catalogo">
             <h2 id="titulo-catalogo">Catálogo de productos</h2>
             <ul>
@@ -131,6 +135,14 @@
                         <input type="hidden" id="agregar-6" name="producto" value="cinturon-de-cuero">
                         <button type="submit">Agregar al carrito</button>
                     </form>
+                </li>
+                <li class="nuevo-producto">
+                    <a href="nuevo-producto.html">
+                        <article>
+                            <span class="mas" aria-hidden="true">+</span>
+                            <p>Agregar nuevo producto</p>
+                        </article>
+                    </a>
                 </li>
             </ul>
         </section>
