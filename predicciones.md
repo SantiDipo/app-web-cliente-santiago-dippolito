@@ -7,3 +7,5 @@ Predicciones
 7- Ajusto imagenes en index y producto para mejora estetica.  
 8- Agrego contacto.html para ser accedido desde index.html al tocar la seccion de contacto.
 9- Agrego carrito de imagenes (estatica) entre header y main
+10- Agrego imagenes en ver detalle del producto y carrito de compras
+11- Agrego seccion para crear productos (por ahora cualquier usuario puede acceder)
