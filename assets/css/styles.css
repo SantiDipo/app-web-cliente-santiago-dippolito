@@ -67,58 +67,50 @@ header {
     color: var(--bordo-oscuro);
 }
 
-/* ---------- Filtro de categorías ---------- */
-#filtro-categorias {
-    max-width: 900px;
-    margin: 1.5rem auto 0;
-    padding: 0 1rem;
+/* ---------- Galería de fotos decorativa ---------- */
+#galeria-fotos {
+    width: 100%;
+    padding: 0;
+    overflow: hidden;
 }
 
-#filtro-categorias h2 {
-    text-align: center;
-    font-size: 1.3rem;
-    color: var(--bordo-oscuro);
-    margin-bottom: 0.5rem;
-}
-
-#filtro-categorias form {
+#galeria-fotos .fotos {
     display: flex;
-    justify-content: center;
+    flex-direction: row;
+    width: 100%;
+    padding: 0;
+}
+
+#galeria-fotos .fotos img {
+    width: 33.333%;
+    height: 180px;
+    object-fit: cover;
+    display: block;
+    flex-shrink: 0;
+}
+
+/* ---------- Filtro de categorías (en header) ---------- */
+#filtro-categorias {
+    display: flex;
     align-items: center;
-    flex-wrap: wrap;
     gap: 0.5rem;
-    margin: 0 auto;
+    margin-left: 1rem;
 }
 
 #filtro-categorias label {
     font-weight: 600;
-    font-size: 0.95rem;
+    font-size: 0.85rem;
+    color: var(--rosa-claro);
 }
 
 #filtro-categorias select {
-    padding: 0.45rem 0.75rem;
-    border: 2px solid var(--bordo-oscuro);
+    padding: 0.35rem 0.6rem;
+    border: 2px solid var(--rosa-claro);
     border-radius: 8px;
     background-color: #fff;
     color: var(--verde-oscuro);
-    font-size: 0.95rem;
+    font-size: 0.85rem;
     cursor: pointer;
-}
-
-#filtro-categorias button {
-    padding: 0.45rem 1.1rem;
-    border: none;
-    border-radius: 8px;
-    background-color: var(--verde-oscuro);
-    color: #fff;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background-color 0.2s;
-}
-
-#filtro-categorias button:hover,
-#filtro-categorias button:focus {
-    background-color: var(--bordo-oscuro);
 }
 
 /* ---------- Catálogo ---------- */
@@ -207,6 +199,38 @@ header {
 #catalogo button:hover,
 #catalogo button:focus {
     background-color: var(--verde-oscuro);
+}
+
+#catalogo li.nuevo-producto > a {
+    display: flex;
+    height: 100%;
+}
+
+#catalogo li.nuevo-producto article {
+    justify-content: center;
+    border-style: dashed;
+    background-color: var(--blanco);
+}
+
+#catalogo li.nuevo-producto article:hover {
+    transform: none;
+    box-shadow: none;
+    border-color: var(--bordo-oscuro);
+}
+
+#catalogo .mas {
+    display: block;
+    font-size: 3rem;
+    font-weight: 700;
+    line-height: 1;
+    color: var(--bordo-oscuro);
+}
+
+#catalogo li.nuevo-producto p {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--verde-oscuro);
+    margin-top: 0.5rem;
 }
 
 /* ---------- Detalle de producto ---------- */
@@ -861,6 +885,10 @@ footer a:focus {
     header {
         justify-content: space-between;
         padding: 0.75rem 2rem;
+    }
+
+    .navbar {
+        margin-left: auto;
     }
 
     .navbar ul {
