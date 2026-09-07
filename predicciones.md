@@ -12,3 +12,6 @@ Predicciones
 12- Quito del navbar las secciones "Productos" y "Ofertas"
 13- Agrego un buscador de productos (ademas del filtro por categorias) en el index
 14- Amplio el catalogo para que ocupe mas pantalla y no quede tan centrado
+15- Hago que las pantallas sean responsive con CSS (header/navbar, galeria de fotos, catalogo, detalle de producto, carrito, formularios y footer)
+16- Hago los iconos del catalogo simetricos para que no se deformen (object-fit: cover y object-position: center)
+17- Hago que las imagenes del catalogo tengan todas el mismo alto y el mismo ancho (220px en catalogo y 160px en relacionados)
