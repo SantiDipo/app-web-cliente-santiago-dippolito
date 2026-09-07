@@ -89,21 +89,24 @@ header {
     flex-shrink: 0;
 }
 
-/* ---------- Filtro de categorías (en header) ---------- */
-#filtro-categorias {
+/* ---------- Filtros del header ---------- */
+#filtro-categorias,
+#busqueda-producto {
     display: flex;
     align-items: center;
     gap: 0.5rem;
     margin-left: 1rem;
 }
 
-#filtro-categorias label {
+#filtro-categorias label,
+#busqueda-producto label {
     font-weight: 600;
     font-size: 0.85rem;
     color: var(--rosa-claro);
 }
 
-#filtro-categorias select {
+#filtro-categorias select,
+#busqueda-producto input[type="search"] {
     padding: 0.35rem 0.6rem;
     border: 2px solid var(--rosa-claro);
     border-radius: 8px;
@@ -113,15 +116,44 @@ header {
     cursor: pointer;
 }
 
+#busqueda-producto input[type="search"] {
+    min-width: 160px;
+    cursor: text;
+}
+
+#busqueda-producto input[type="search"]:focus {
+    outline: none;
+    border-color: var(--verde-oscuro);
+    box-shadow: 0 0 0 3px rgba(228, 159, 182, 0.4);
+}
+
+#busqueda-producto button {
+    padding: 0.35rem 0.8rem;
+    border: none;
+    border-radius: 8px;
+    background-color: var(--rosa-claro);
+    color: var(--bordo-oscuro);
+    font-weight: 600;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+#busqueda-producto button:hover,
+#busqueda-producto button:focus {
+    background-color: var(--verde-oscuro);
+    color: #fff;
+}
+
 /* ---------- Catálogo ---------- */
 #catalogo {
-    max-width: 900px;
+    max-width: 1400px;
     margin: 0 auto;
-    padding: 1rem;
+    padding: 1.5rem 2rem;
+    width: 100%;
 }
 
 #catalogo h2 {
-    text-align: center;
     font-size: 1.3rem;
     color: var(--bordo-oscuro);
     margin-bottom: 1rem;
@@ -130,8 +162,8 @@ header {
 #catalogo ul {
     list-style: none;
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-    gap: 1rem;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 1.25rem;
 }
 
 #catalogo li > a {

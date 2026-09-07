@@ -23,11 +23,23 @@
             </select>
         </form>
 
+        <form id="busqueda-producto" action="index.html" method="get" aria-label="Buscar un producto">
+            <label for="busqueda">Buscar producto</label>
+            <input type="search" id="busqueda" name="busqueda" placeholder="Ej: reloj clásico" list="lista-productos">
+            <datalist id="lista-productos">
+                <option value="Reloj clásico"></option>
+                <option value="Bolso de mano"></option>
+                <option value="Gorra deportiva"></option>
+                <option value="Lentes de sol"></option>
+                <option value="Pulsera de plata"></option>
+                <option value="Cinturón de cuero"></option>
+            </datalist>
+            <button type="submit">Buscar</button>
+        </form>
+
         <nav class="navbar" aria-label="Navegación principal">
             <ul>
                 <li><a href="index.html">Inicio</a></li>
-                <li><a href="#">Productos</a></li>
-                <li><a href="#">Ofertas</a></li>
                 <li><a href="contacto.html">Contacto</a></li>
                 <li><a href="carrito.html">Carrito</a></li>
             </ul>
