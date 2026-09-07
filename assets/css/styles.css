@@ -26,14 +26,20 @@ a {
 /* ---------- Header / Navbar ---------- */
 header {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
-    gap: 1rem;
+    gap: 0.5rem 1rem;
     padding: 0.75rem 1rem;
     background-color: var(--bordo-oscuro);
     position: sticky;
     top: 0;
     z-index: 10;
     box-shadow: 0 2px 8px rgba(94, 7, 35, 0.4);
+}
+
+img {
+    max-width: 100%;
+    height: auto;
 }
 
 .logo {
@@ -195,10 +201,14 @@ header {
 }
 
 #catalogo img {
-    width: 100%;
+    display: block;
+    width: min(220px, 100%);
     height: auto;
     aspect-ratio: 1 / 1;
     object-fit: cover;
+    object-position: center;
+    flex-shrink: 0;
+    margin: 0 auto;
     border-radius: 8px;
     background-color: var(--rosa-claro);
 }
@@ -318,6 +328,7 @@ header {
     height: auto;
     aspect-ratio: 1 / 1;
     object-fit: cover;
+    object-position: center;
     border-radius: 8px;
     background-color: var(--rosa-claro);
 }
@@ -439,10 +450,14 @@ header {
 }
 
 #relacionados img {
-    width: 100%;
+    display: block;
+    width: min(160px, 100%);
     height: auto;
     aspect-ratio: 1 / 1;
     object-fit: cover;
+    object-position: center;
+    flex-shrink: 0;
+    margin: 0 auto;
     border-radius: 8px;
     background-color: var(--rosa-claro);
 }
@@ -839,8 +854,95 @@ header {
 }
 
 @media (max-width: 600px) {
+    /* ---------- Header / Navegación en móvil ---------- */
+    header {
+        padding: 0.6rem 0.75rem;
+        gap: 0.4rem 0.75rem;
+    }
+
+    .navbar {
+        margin-left: auto;
+        order: 1;
+    }
+
+    .navbar ul {
+        flex-direction: row;
+        gap: 0.25rem;
+    }
+
+    .navbar a {
+        font-size: 0.8rem;
+        padding: 0.3rem 0.5rem;
+    }
+
+    #filtro-categorias,
+    #busqueda-producto {
+        width: 100%;
+        margin-left: 0;
+        order: 2;
+        flex-wrap: wrap;
+    }
+
+    #filtro-categorias select {
+        flex-grow: 1;
+        min-width: 0;
+    }
+
+    #busqueda-producto input[type="search"] {
+        flex-grow: 1;
+        min-width: 0;
+    }
+
+    #busqueda-producto button {
+        white-space: nowrap;
+    }
+
+    /* ---------- Galería de fotos: carrusel en móvil ---------- */
+    #galeria-fotos .fotos {
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+    }
+
+    #galeria-fotos .fotos::-webkit-scrollbar {
+        display: none;
+    }
+
+    #galeria-fotos .fotos img {
+        width: 100%;
+        height: 200px;
+        flex-shrink: 0;
+        scroll-snap-align: start;
+    }
+
+    /* ---------- Catálogo en móvil ---------- */
+    #catalogo {
+        padding: 1rem;
+    }
+
+    #catalogo ul {
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+        gap: 1rem;
+    }
+
+    /* ---------- Detalle de producto en móvil ---------- */
+    .detalle-info form {
+        width: 100%;
+    }
+
+    .detalle-info form button {
+        flex-grow: 1;
+    }
+
+    #detalle-producto > article {
+        padding: 1rem;
+    }
+
+    /* ---------- Carrito de compras en móvil ---------- */
     #resumen-carrito {
         max-width: 100%;
+        margin-left: 0;
     }
 
     #carrito thead {
@@ -859,16 +961,38 @@ header {
         align-items: center;
         gap: 0.75rem;
         border-top: none;
+        padding: 0.5rem 0.75rem;
     }
 
     #carrito tbody td::before {
         content: attr(data-titulo);
         font-weight: 700;
         color: var(--bordo-oscuro);
+        flex-shrink: 0;
     }
 
     #carrito tbody td[data-titulo="Producto"]::before {
         display: none;
+    }
+
+    #carrito td form {
+        flex-wrap: wrap;
+    }
+
+    /* ---------- Formularios (contacto y nuevo producto) en móvil ---------- */
+    #contacto,
+    #nuevo-producto {
+        padding: 0.75rem;
+    }
+
+    #contacto form,
+    #nuevo-producto form {
+        padding: 1rem;
+    }
+
+    /* ---------- Footer en móvil ---------- */
+    footer {
+        padding: 1rem 0.75rem;
     }
 }
 
@@ -930,5 +1054,43 @@ footer a:focus {
 
     .navbar a {
         font-size: 1rem;
+    }
+
+    /* Los filtros se alinean a la izquierda, junto al logo */
+    #filtro-categorias,
+    #busqueda-producto {
+        margin-left: 1rem;
+        width: auto;
+    }
+
+    #filtro-categorias {
+        order: 1;
+    }
+
+    #busqueda-producto {
+        order: 2;
+    }
+
+    .navbar {
+        order: 3;
+    }
+}
+
+/* ---------- Pantallas grandes / desktop ---------- */
+@media (min-width: 1024px) {
+    header {
+        padding: 0.9rem 2.5rem;
+    }
+
+    .navbar ul {
+        gap: 0.75rem;
+    }
+
+    #catalogo {
+        padding: 2rem;
+    }
+
+    #galeria-fotos .fotos img {
+        height: 240px;
     }
 }
