@@ -9,3 +9,6 @@ Predicciones
 9- Agrego carrito de imagenes (estatica) entre header y main
 10- Agrego imagenes en ver detalle del producto y carrito de compras
 11- Agrego seccion para crear productos (por ahora cualquier usuario puede acceder)
+12- Quito del navbar las secciones "Productos" y "Ofertas"
+13- Agrego un buscador de productos (ademas del filtro por categorias) en el index
+14- Amplio el catalogo para que ocupe mas pantalla y no quede tan centrado
