@@ -183,10 +183,9 @@ img {
     align-items: center;
     text-align: center;
     background-color: #fff;
-    border: 2px solid var(--rosa-claro);
-    border-radius: 12px;
+    border-radius: 12px 12px 0 0;
     padding: 1rem;
-    height: 100%;
+    height: 350px;
     transition: transform 0.2s, box-shadow 0.2s;
 }
 
@@ -230,7 +229,7 @@ img {
     width: 100%;
     padding: 0.5rem;
     border: none;
-    border-radius: 8px;
+    border-radius: 0 0 12px 12px;
     background-color: var(--bordo-oscuro);
     color: #fff;
     font-weight: 600;
@@ -1092,5 +1091,101 @@ footer a:focus {
 
     #galeria-fotos .fotos img {
         height: 240px;
+    }
+}
+
+/* ---------- Login ---------- */
+#login {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 1rem;
+}
+
+#login h1 {
+    font-size: 1.5rem;
+    color: var(--bordo-oscuro);
+    text-align: center;
+    margin-bottom: 1.25rem;
+}
+
+#login form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    background-color: #fff;
+    border: 2px solid var(--rosa-claro);
+    border-radius: 12px;
+    padding: 1.5rem;
+}
+
+#login .campo {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+}
+
+#login label {
+    font-weight: 600;
+    color: var(--verde-oscuro);
+}
+
+#login input[type="text"],
+#login input[type="password"] {
+    padding: 0.55rem 0.75rem;
+    border: 2px solid var(--bordo-oscuro);
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-family: inherit;
+    color: var(--verde-oscuro);
+    background-color: var(--blanco);
+}
+
+#login input:focus {
+    outline: none;
+    border-color: var(--verde-oscuro);
+    box-shadow: 0 0 0 3px rgba(228, 159, 182, 0.4);
+}
+
+#login button[type="submit"] {
+    width: 100%;
+    padding: 0.65rem;
+    border: none;
+    border-radius: 8px;
+    background-color: var(--bordo-oscuro);
+    color: #fff;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+#login button[type="submit"]:hover,
+#login button[type="submit"]:focus {
+    background-color: var(--verde-oscuro);
+}
+
+#login .boton-crear-cuenta {
+    display: block;
+    text-align: center;
+    padding: 0.65rem;
+    border: 2px solid var(--bordo-oscuro);
+    border-radius: 8px;
+    background-color: transparent;
+    color: var(--bordo-oscuro);
+    font-weight: 700;
+    font-size: 1rem;
+    text-decoration: none;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+#login .boton-crear-cuenta:hover,
+#login .boton-crear-cuenta:focus {
+    background-color: var(--bordo-oscuro);
+    color: #fff;
+}
+
+@media (min-width: 600px) {
+    #login h1 {
+        font-size: 2rem;
     }
 }
