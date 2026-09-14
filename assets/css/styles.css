@@ -23,6 +23,10 @@ a {
     color: inherit;
 }
 
+main {
+    min-height: 79vh;
+}
+
 /* ---------- Header / Navbar ---------- */
 header {
     display: flex;
