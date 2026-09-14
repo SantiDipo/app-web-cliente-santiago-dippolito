@@ -33,6 +33,10 @@
                 <option value="Lentes de sol"></option>
                 <option value="Pulsera de plata"></option>
                 <option value="Cinturón de cuero"></option>
+                <option value="Collar de plata"></option>
+                <option value="Aretes dorados"></option>
+                <option value="Billetera de cuero"></option>
+                <option value="Set de anillos"></option>
             </datalist>
             <button type="submit">Buscar</button>
         </form>
@@ -148,13 +152,65 @@
                         <button type="submit">Agregar al carrito</button>
                     </form>
                 </li>
-                <li class="nuevo-producto">
-                    <a href="nuevo-producto.html">
+                <li>
+                    <a href="producto.html">
                         <article>
-                            <span class="mas" aria-hidden="true">+</span>
-                            <p>Agregar nuevo producto</p>
+                            <h3>Collar de plata</h3>
+                            <img src="https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?q=85&fm=jpg&crop=entropy&cs=srgb&w=800" alt="Imagen del collar de plata" width="200" height="200">
+                            <p>Collar de plata con colgante de piedra azul.</p>
+                            <p>$24.999</p>
                         </article>
                     </a>
+                    <form action="carrito.html" method="get">
+                        <label class="sr-only" for="agregar-7">Agregar collar de plata al carrito</label>
+                        <input type="hidden" id="agregar-7" name="producto" value="collar-de-plata">
+                        <button type="submit">Agregar al carrito</button>
+                    </form>
+                </li>
+                <li>
+                    <a href="producto.html">
+                        <article>
+                            <h3>Aretes dorados</h3>
+                            <img src="https://images.unsplash.com/photo-1630019852942-f89202989a59?q=85&fm=jpg&crop=entropy&cs=srgb&w=800" alt="Imagen de los aretes dorados" width="200" height="200">
+                            <p>Aretes de aro dorados, livianos y elegantes.</p>
+                            <p>$16.999</p>
+                        </article>
+                    </a>
+                    <form action="carrito.html" method="get">
+                        <label class="sr-only" for="agregar-8">Agregar aretes dorados al carrito</label>
+                        <input type="hidden" id="agregar-8" name="producto" value="aretes-dorados">
+                        <button type="submit">Agregar al carrito</button>
+                    </form>
+                </li>
+                <li>
+                    <a href="producto.html">
+                        <article>
+                            <h3>Billetera de cuero</h3>
+                            <img src="https://images.unsplash.com/photo-1627123424574-724758594e93?q=85&fm=jpg&crop=entropy&cs=srgb&w=800" alt="Imagen de la billetera de cuero" width="200" height="200">
+                            <p>Billetera de cuero marrón con varios compartimentos.</p>
+                            <p>$22.999</p>
+                        </article>
+                    </a>
+                    <form action="carrito.html" method="get">
+                        <label class="sr-only" for="agregar-9">Agregar billetera de cuero al carrito</label>
+                        <input type="hidden" id="agregar-9" name="producto" value="billetera-de-cuero">
+                        <button type="submit">Agregar al carrito</button>
+                    </form>
+                </li>
+                <li>
+                    <a href="producto.html">
+                        <article>
+                            <h3>Set de anillos</h3>
+                            <img src="https://images.unsplash.com/photo-1605100804763-247f67b3557e?q=85&fm=jpg&crop=entropy&cs=srgb&w=800" alt="Imagen del set de anillos" width="200" height="200">
+                            <p>Set de anillos finos con acabado dorado.</p>
+                            <p>$18.999</p>
+                        </article>
+                    </a>
+                    <form action="carrito.html" method="get">
+                        <label class="sr-only" for="agregar-10">Agregar set de anillos al carrito</label>
+                        <input type="hidden" id="agregar-10" name="producto" value="set-de-anillos">
+                        <button type="submit">Agregar al carrito</button>
+                    </form>
                 </li>
             </ul>
         </section>
