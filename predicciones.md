@@ -17,3 +17,4 @@ Predicciones
 17- Hago que las imagenes del catalogo tengan todas el mismo alto y el mismo ancho (220px en catalogo y 160px en relacionados)
 18- Agrego pagina de inicio de sesion y mejoro estilos visto en clase
 19- Creo pagina de administracion con catalogo de productos con icono de lapiz que redirige a edicion de productos y opcion para agregar nuevos productos
+20- Quito los filtros sobre el navbar y dejo un input de busqueda que al seleccionarlo te envia a una pantalla de busqueda de productos más completa
