@@ -1027,6 +1027,16 @@ img {
     color: var(--bordo-oscuro);
 }
 
+/* ---------- Botón hamburguesa ---------- */
+.menu-hamburguesa {
+    display: none;
+}
+
+/* La sección "Buscar producto" del menú solo se muestra en el menú desplegable */
+.navbar li.buscar-producto {
+    display: none;
+}
+
 @media (max-width: 600px) {
     /* ---------- Header / Navegación en móvil ---------- */
     header {
@@ -1378,5 +1388,102 @@ footer a:focus {
 @media (min-width: 600px) {
     #login h1 {
         font-size: 2rem;
+    }
+}
+
+/* ---------- Menú hamburguesa (responsive) ---------- */
+@media (max-width: 900px) {
+    header {
+        z-index: 30;
+    }
+
+    /* Se oculta el buscador del header y pasa al menú */
+    #busqueda-producto {
+        display: none;
+    }
+
+    /* Botón hamburguesa (label del checkbox) */
+    .menu-hamburguesa {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin-left: auto;
+        order: 1;
+        padding: 0.5rem;
+        border: none;
+        background-color: transparent;
+        color: var(--rosa-claro);
+        cursor: pointer;
+    }
+
+    .menu-hamburguesa:hover {
+        color: var(--rosa-claro);
+    }
+
+    #menu-movil-toggle:focus-visible ~ .menu-hamburguesa {
+        outline: 2px solid var(--rosa-claro);
+        outline-offset: 2px;
+    }
+
+    .menu-hamburguesa svg {
+        width: 22px;
+        height: 22px;
+    }
+
+    .menu-hamburguesa .icono-cerrar {
+        display: none;
+    }
+
+    #menu-movil-toggle:checked ~ .menu-hamburguesa .icono-hamburguesa {
+        display: none;
+    }
+
+    #menu-movil-toggle:checked ~ .menu-hamburguesa .icono-cerrar {
+        display: block;
+    }
+
+    /* El navbar se convierte en un panel que se desliza de manera horizontal */
+    .navbar {
+        position: fixed;
+        top: 0;
+        right: 0;
+        height: 100vh;
+        width: min(78vw, 320px);
+        margin: 0;
+        order: 0;
+        padding: 4.75rem 1.25rem 1.25rem;
+        background-color: var(--bordo-oscuro);
+        box-shadow: -6px 0 20px rgba(0, 0, 0, 0.35);
+        transform: translateX(100%);
+        visibility: hidden;
+        transition: transform 0.3s ease, visibility 0.3s;
+        z-index: 40;
+        overflow-y: auto;
+    }
+
+    .navbar ul {
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .navbar a {
+        display: block;
+        width: 100%;
+        font-size: 1rem;
+        padding: 0.6rem 0.85rem;
+        text-align: left;
+    }
+
+    #menu-movil-toggle:checked ~ .navbar {
+        transform: translateX(0);
+        visibility: visible;
+    }
+
+    /* Sección "Buscar producto" dentro del menú */
+    .navbar li.buscar-producto {
+        display: block;
+        margin-top: 1rem;
+        padding-top: 1rem;
+        border-top: 2px solid rgba(228, 159, 182, 0.4);
     }
 }

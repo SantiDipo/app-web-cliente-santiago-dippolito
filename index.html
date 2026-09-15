@@ -24,11 +24,26 @@
             </div>
         </form>
 
-        <nav class="navbar" aria-label="Navegación principal">
+        <input type="checkbox" id="menu-movil-toggle" class="menu-toggle sr-only">
+        <label for="menu-movil-toggle" class="menu-hamburguesa">
+            <span class="sr-only">Abrir menú de navegación</span>
+            <svg class="icono-hamburguesa" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <line x1="4" y1="6" x2="20" y2="6"></line>
+                <line x1="4" y1="12" x2="20" y2="12"></line>
+                <line x1="4" y1="18" x2="20" y2="18"></line>
+            </svg>
+            <svg class="icono-cerrar" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+            </svg>
+        </label>
+
+        <nav id="menu-movil" class="navbar" aria-label="Navegación principal">
             <ul>
                 <li><a href="index.html">Inicio</a></li>
                 <li><a href="contacto.html">Contacto</a></li>
                 <li><a href="carrito.html">Carrito</a></li>
+                <li class="buscar-producto"><a href="busqueda.html">Buscar producto</a></li>
             </ul>
         </nav>
     </header>
