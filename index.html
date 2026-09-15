@@ -11,34 +11,17 @@
     <header>
         <img class="logo" src="assets/img/2.png" alt="Logo de Accesorios Shop" width="48" height="48">
 
-        <form id="filtro-categorias" aria-label="Filtrar por categoría">
-            <label for="categoria">Categoría</label>
-            <select id="categoria" name="categoria">
-                <option value="todas">Todas</option>
-                <option value="relojes">Relojes</option>
-                <option value="bolsos">Bolsos</option>
-                <option value="gorras">Gorras</option>
-                <option value="lentes">Lentes de sol</option>
-                <option value="joyeria">Joyería</option>
-            </select>
-        </form>
-
-        <form id="busqueda-producto" action="index.html" method="get" aria-label="Buscar un producto">
-            <label for="busqueda">Buscar producto</label>
-            <input type="search" id="busqueda" name="busqueda" placeholder="Ej: reloj clásico" list="lista-productos">
-            <datalist id="lista-productos">
-                <option value="Reloj clásico"></option>
-                <option value="Bolso de mano"></option>
-                <option value="Gorra deportiva"></option>
-                <option value="Lentes de sol"></option>
-                <option value="Pulsera de plata"></option>
-                <option value="Cinturón de cuero"></option>
-                <option value="Collar de plata"></option>
-                <option value="Aretes dorados"></option>
-                <option value="Billetera de cuero"></option>
-                <option value="Set de anillos"></option>
-            </datalist>
-            <button type="submit">Buscar</button>
+        <form id="busqueda-producto" action="busqueda.html" method="get" aria-label="Buscar un producto">
+            <label class="sr-only" for="busqueda">Buscar un producto</label>
+            <div class="buscador-lupa">
+                <input type="search" id="busqueda" name="busqueda" placeholder="Buscar productos...">
+                <button type="submit" class="btn-lupa" aria-label="Buscar">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="m21 21-4.3-4.3"></path>
+                    </svg>
+                </button>
+            </div>
         </form>
 
         <nav class="navbar" aria-label="Navegación principal">

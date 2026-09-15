@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Búsqueda y filtros de productos en Accesorios Shop.">
+    <title>Buscar productos | Accesorios Shop</title>
+    <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+    <header>
+        <a href="index.html" aria-label="Ir al inicio">
+            <img class="logo" src="assets/img/2.png" alt="Logo de Accesorios Shop" width="48" height="48">
+        </a>
+
+        <form id="busqueda-producto" action="busqueda.html" method="get" aria-label="Buscar un producto">
+            <label class="sr-only" for="busqueda">Buscar un producto</label>
+            <div class="buscador-lupa">
+                <input type="search" id="busqueda" name="busqueda" placeholder="Buscar productos...">
+                <button type="submit" class="btn-lupa" aria-label="Buscar">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="m21 21-4.3-4.3"></path>
+                    </svg>
+                </button>
+            </div>
+        </form>
+
+        <nav class="navbar" aria-label="Navegación principal">
+            <ul>
+                <li><a href="index.html">Inicio</a></li>
+                <li><a href="contacto.html">Contacto</a></li>
+                <li><a href="carrito.html">Carrito</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main id="resultados-busqueda">
+        <nav class="breadcrumb" aria-label="Ruta de navegación">
+            <ol>
+                <li><a href="index.html">Inicio</a></li>
+                <li aria-current="page">Buscar productos</li>
+            </ol>
+        </nav>
+
+        <h1>Buscar productos</h1>
+        <p class="resultado-info">Mostrando 10 productos</p>
+
+        <div class="busqueda-layout">
+            <aside id="filtros-busqueda" aria-label="Filtros de búsqueda">
+                <h2 class="sr-only">Filtros de búsqueda</h2>
+
+                <form action="busqueda.html" method="get" aria-label="Filtrar productos">
+                    <div class="campo">
+                        <label for="busqueda-filtros">Buscar</label>
+                        <input type="search" id="busqueda-filtros" name="busqueda" placeholder="Ej: reloj clásico">
+                    </div>
+
+                    <div class="campo">
+                        <label for="categoria">Categoría</label>
+                        <select id="categoria" name="categoria">
+                            <option value="todas">Todas</option>
+                            <option value="relojes">Relojes</option>
+                            <option value="bolsos">Bolsos</option>
+                            <option value="gorras">Gorras</option>
+                            <option value="lentes">Lentes de sol</option>
+                            <option value="joyeria">Joyería</option>
+                            <option value="accesorios">Accesorios</option>
+                        </select>
+                    </div>
+
+                    <div class="campo">
+                        <label for="orden">Ordenar por</label>
+                        <select id="orden" name="orden">
+                            <option value="mas-vendido">Más vendido</option>
+                            <option value="precio-mayor-menor">Precio: mayor a menor</option>
+                            <option value="precio-menor-mayor">Precio: menor a mayor</option>
+                            <option value="a-z">A-Z</option>
+                            <option value="z-a">Z-A</option>
+                            <option value="mas-nuevo">Más nuevo a más viejo</option>
+                            <option value="mas-viejo">Más viejo a más nuevo</option>
+                        </select>
+                    </div>
+
+                    <fieldset>
+                        <legend>Disponibilidad</legend>
+                        <label>
+                            <input type="checkbox" name="disponibilidad" value="en-stock">
+                            En stock
+                        </label>
+                        <label>
+                            <input type="checkbox" name="disponibilidad" value="agotado">
+                            Agotados
+                        </label>
+                    </fieldset>
+
+                    <button type="submit">Aplicar filtros</button>
+                </form>
+            </aside>
+
+            <section id="catalogo" aria-labelledby="titulo-resultados">
+                <h2 id="titulo-resultados">Productos</h2>
+                <ul>
+                    <li>
+                        <a href="producto.html">
+                            <article>
+                                <h3>Reloj clásico</h3>
+                                <img src="https://images.unsplash.com/photo-1777457900943-7fd2f7c42529?q=85&fm=jpg&crop=entropy&cs=srgb&w=800" alt="Imagen del reloj clásico" width="200" height="200">
+                                <p>Reloj analógico con correa de cuero.</p>
+                                <p>$49.999</p>
+                            </article>
+                        </a>
+                        <form action="carrito.html" method="get">
+                            <label class="sr-only" for="agregar-1">Agregar reloj clásico al carrito</label>
+                            <input type="hidden" id="agregar-1" name="producto" value="reloj-clasico">
+                            <button type="submit">Agregar al carrito</button>
+                        </form>
+                    </li>
+                    <li>
+                        <a href="producto.html">
+                            <article>
+                                <h3>Bolso de mano</h3>
+                                <img src="https://images.unsplash.com/photo-1598532163257-ae3c6b2524b6?q=85&fm=jpg&crop=entropy&cs=srgb&w=800" alt="Imagen del bolso de mano" width="200" height="200">
+                                <p>Bolso de cuero sintético, ideal para uso diario.</p>
+                                <p>$39.999</p>
+                            </article>
+                        </a>
+                        <form action="carrito.html" method="get">
+                            <label class="sr-only" for="agregar-2">Agregar bolso de mano al carrito</label>
+                            <input type="hidden" id="agregar-2" name="producto" value="bolso-de-mano">
+                            <button type="submit">Agregar al carrito</button>
+                        </form>
+                    </li>
+                    <li>
+                        <a href="producto.html">
+                            <article>
+                                <h3>Gorra deportiva</h3>
+                                <img src="https://images.unsplash.com/photo-1588850561407-ed78c282e89b?q=85&fm=jpg&crop=entropy&cs=srgb&w=800" alt="Imagen de la gorra deportiva" width="200" height="200">
+                                <p>Gorra ajustable transpirable.</p>
+                                <p>$12.999</p>
+                            </article>
+                        </a>
+                        <form action="carrito.html" method="get">
+                            <label class="sr-only" for="agregar-3">Agregar gorra deportiva al carrito</label>
+                            <input type="hidden" id="agregar-3" name="producto" value="gorra-deportiva">
+                            <button type="submit">Agregar al carrito</button>
+                        </form>
+                    </li>
+                    <li>
+                        <a href="producto.html">
+                            <article>
+                                <h3>Lentes de sol</h3>
+                                <img src="https://images.unsplash.com/photo-1584036553516-bf83210aa16c?q=85&fm=jpg&crop=entropy&cs=srgb&w=800" alt="Imagen de los lentes de sol" width="200" height="200">
+                                <p>Lentes polarizados con protección UV400.</p>
+                                <p>$25.999</p>
+                            </article>
+                        </a>
+                        <form action="carrito.html" method="get">
+                            <label class="sr-only" for="agregar-4">Agregar lentes de sol al carrito</label>
+                            <input type="hidden" id="agregar-4" name="producto" value="lentes-de-sol">
+                            <button type="submit">Agregar al carrito</button>
+                        </form>
+                    </li>
+                    <li>
+                        <a href="producto.html">
+                            <article>
+                                <h3>Pulsera de plata</h3>
+                                <img src="https://images.unsplash.com/photo-1681091638833-b2409f8ee8d8?q=85&fm=jpg&crop=entropy&cs=srgb&w=800" alt="Imagen de la pulsera de plata" width="200" height="200">
+                                <p>Pulsera de plata 925 con diseño minimalista.</p>
+                                <p>$18.499</p>
+                            </article>
+                        </a>
+                        <form action="carrito.html" method="get">
+                            <label class="sr-only" for="agregar-5">Agregar pulsera de plata al carrito</label>
+                            <input type="hidden" id="agregar-5" name="producto" value="pulsera-de-plata">
+                            <button type="submit">Agregar al carrito</button>
+                        </form>
+                    </li>
+                    <li>
+                        <a href="producto.html">
+                            <article>
+                                <h3>Cinturón de cuero</h3>
+                                <img src="https://images.unsplash.com/photo-1565251419287-9097aa7299ec?q=85&fm=jpg&crop=entropy&cs=srgb&w=800" alt="Imagen del cinturón de cuero" width="200" height="200">
+                                <p>Cinturón de cuero genuino con hebilla metálica.</p>
+                                <p>$15.999</p>
+                            </article>
+                        </a>
+                        <form action="carrito.html" method="get">
+                            <label class="sr-only" for="agregar-6">Agregar cinturón de cuero al carrito</label>
+                            <input type="hidden" id="agregar-6" name="producto" value="cinturon-de-cuero">
+                            <button type="submit">Agregar al carrito</button>
+                        </form>
+                    </li>
+                    <li>
+                        <a href="producto.html">
+                            <article>
+                                <h3>Collar de plata</h3>
+                                <img src="https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?q=85&fm=jpg&crop=entropy&cs=srgb&w=800" alt="Imagen del collar de plata" width="200" height="200">
+                                <p>Collar de plata con colgante de piedra azul.</p>
+                                <p>$24.999</p>
+                            </article>
+                        </a>
+                        <form action="carrito.html" method="get">
+                            <label class="sr-only" for="agregar-7">Agregar collar de plata al carrito</label>
+                            <input type="hidden" id="agregar-7" name="producto" value="collar-de-plata">
+                            <button type="submit">Agregar al carrito</button>
+                        </form>
+                    </li>
+                    <li>
+                        <a href="producto.html">
+                            <article>
+                                <h3>Aretes dorados</h3>
+                                <img src="https://images.unsplash.com/photo-1630019852942-f89202989a59?q=85&fm=jpg&crop=entropy&cs=srgb&w=800" alt="Imagen de los aretes dorados" width="200" height="200">
+                                <p>Aretes de aro dorados, livianos y elegantes.</p>
+                                <p>$16.999</p>
+                            </article>
+                        </a>
+                        <form action="carrito.html" method="get">
+                            <label class="sr-only" for="agregar-8">Agregar aretes dorados al carrito</label>
+                            <input type="hidden" id="agregar-8" name="producto" value="aretes-dorados">
+                            <button type="submit">Agregar al carrito</button>
+                        </form>
+                    </li>
+                    <li>
+                        <a href="producto.html">
+                            <article>
+                                <h3>Billetera de cuero</h3>
+                                <img src="https://images.unsplash.com/photo-1627123424574-724758594e93?q=85&fm=jpg&crop=entropy&cs=srgb&w=800" alt="Imagen de la billetera de cuero" width="200" height="200">
+                                <p>Billetera de cuero marrón con varios compartimentos.</p>
+                                <p>$22.999</p>
+                            </article>
+                        </a>
+                        <form action="carrito.html" method="get">
+                            <label class="sr-only" for="agregar-9">Agregar billetera de cuero al carrito</label>
+                            <input type="hidden" id="agregar-9" name="producto" value="billetera-de-cuero">
+                            <button type="submit">Agregar al carrito</button>
+                        </form>
+                    </li>
+                    <li>
+                        <a href="producto.html">
+                            <article>
+                                <h3>Set de anillos</h3>
+                                <img src="https://images.unsplash.com/photo-1605100804763-247f67b3557e?q=85&fm=jpg&crop=entropy&cs=srgb&w=800" alt="Imagen del set de anillos" width="200" height="200">
+                                <p>Set de anillos finos con acabado dorado.</p>
+                                <p>$18.999</p>
+                            </article>
+                        </a>
+                        <form action="carrito.html" method="get">
+                            <label class="sr-only" for="agregar-10">Agregar set de anillos al carrito</label>
+                            <input type="hidden" id="agregar-10" name="producto" value="set-de-anillos">
+                            <button type="submit">Agregar al carrito</button>
+                        </form>
+                    </li>
+                </ul>
+            </section>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Accesorios Shop. Todos los derechos reservados.</p>
+        <nav aria-label="Redes sociales">
+            <ul>
+                <li><a href="https://www.instagram.com/" target="_blank" rel="noopener noreferrer">Instagram</a></li>
+                <li><a href="https://www.facebook.com/" target="_blank" rel="noopener noreferrer">Facebook</a></li>
+                <li><a href="https://x.com/" target="_blank" rel="noopener noreferrer">X (Twitter)</a></li>
+                <li><a href="https://www.tiktok.com/" target="_blank" rel="noopener noreferrer">TikTok</a></li>
+            </ul>
+        </nav>
+    </footer>
+</body>
+</html>
