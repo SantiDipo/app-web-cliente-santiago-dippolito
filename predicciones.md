@@ -20,3 +20,5 @@ Predicciones
 20- Quito los filtros sobre el navbar y dejo un input de busqueda que al seleccionarlo te envia a una pantalla de busqueda de productos más completa
 21- Agrego menu hamburguesa para el responsive, dejando la pantalla mas limpia para moviles. 
 22- Agrego animacion al carrucel de imagenes del index.html
+23- Agrego iniciar sesion al al header para acceder a las pantallas de administracion
+24- Agrego js para reutilizar una pantalla header y footer, las cuales separamos en 2 pantallas nuevas.
