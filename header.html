@@ -1,0 +1,40 @@
+<a href="index.html" aria-label="Ir al inicio">
+            <img class="logo" src="assets/img/2.png" alt="Logo de Accesorios Shop" width="48" height="48">
+        </a>
+
+        <form id="busqueda-producto" action="busqueda.html" method="get" aria-label="Buscar un producto">
+            <label class="sr-only" for="busqueda">Buscar un producto</label>
+            <div class="buscador-lupa">
+                <input type="search" id="busqueda" name="busqueda" placeholder="Buscar productos...">
+                <button type="submit" class="btn-lupa" aria-label="Buscar">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="m21 21-4.3-4.3"></path>
+                    </svg>
+                </button>
+            </div>
+        </form>
+
+        <input type="checkbox" id="menu-movil-toggle" class="menu-toggle sr-only">
+        <label for="menu-movil-toggle" class="menu-hamburguesa">
+            <span class="sr-only">Abrir menú de navegación</span>
+            <svg class="icono-hamburguesa" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <line x1="4" y1="6" x2="20" y2="6"></line>
+                <line x1="4" y1="12" x2="20" y2="12"></line>
+                <line x1="4" y1="18" x2="20" y2="18"></line>
+            </svg>
+            <svg class="icono-cerrar" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+            </svg>
+        </label>
+
+        <nav id="menu-movil" class="navbar" aria-label="Navegación principal">
+            <ul>
+                <li><a href="index.html">Inicio</a></li>
+                <li><a href="contacto.html">Contacto</a></li>
+                <li><a href="carrito.html">Carrito</a></li>
+                <li class="buscar-producto"><a href="busqueda.html">Buscar producto</a></li>
+                <li><a href="login.html">Iniciar sesión</a></li>
+            </ul>
+        </nav>
