@@ -19,3 +19,4 @@ Predicciones
 19- Creo pagina de administracion con catalogo de productos con icono de lapiz que redirige a edicion de productos y opcion para agregar nuevos productos
 20- Quito los filtros sobre el navbar y dejo un input de busqueda que al seleccionarlo te envia a una pantalla de busqueda de productos más completa
 21- Agrego menu hamburguesa para el responsive, dejando la pantalla mas limpia para moviles. 
+22- Agrego animacion al carrucel de imagenes del index.html
