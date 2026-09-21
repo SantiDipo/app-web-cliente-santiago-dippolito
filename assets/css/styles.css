@@ -87,12 +87,18 @@ img {
 #galeria-fotos .fotos {
     display: flex;
     flex-direction: row;
-    width: 100%;
+    width: 200%;
     padding: 0;
+    animation: desplazamiento-carrusel 25s linear infinite;
+}
+
+@keyframes desplazamiento-carrusel {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
 }
 
 #galeria-fotos .fotos img {
-    width: 33.333%;
+    width: 16.666%;
     height: 180px;
     object-fit: cover;
     display: block;
@@ -202,7 +208,7 @@ img {
 
 #catalogo h3 {
     font-size: 1rem;
-    color: var(--verde-oscuro);
+    color: var(--bordo-oscuro);
 }
 
 #catalogo img {
@@ -1078,6 +1084,7 @@ img {
 
     /* ---------- Galería de fotos: carrusel en móvil ---------- */
     #galeria-fotos .fotos {
+        animation: none;
         overflow-x: auto;
         scroll-snap-type: x mandatory;
         -webkit-overflow-scrolling: touch;
@@ -1093,6 +1100,10 @@ img {
         height: 200px;
         flex-shrink: 0;
         scroll-snap-align: start;
+    }
+
+    #galeria-fotos .fotos img:nth-child(n+4) {
+        display: none;
     }
 
     /* ---------- Catálogo en móvil ---------- */
