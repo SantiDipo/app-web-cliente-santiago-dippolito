@@ -321,8 +321,8 @@ img {
 /* X para eliminar producto (interacción con JS en el futuro) */
 #catalogo .icono-eliminar {
     position: absolute;
-    top: 0rem;
-    right: calc(12.5rem + 36px + 0.4rem);
+    top: 0.75rem;
+    left: 0.75rem;
     display: grid;
     place-items: center;
     width: 36px;
@@ -1353,6 +1353,11 @@ footer a:focus {
 
     .breadcrumb-admin {
         padding: 2rem 2rem 0;
+    }
+
+    #catalogo .icono-eliminar {
+        top: 0rem;
+        left: 0.05rem;
     }
 
     #galeria-fotos .fotos img {
