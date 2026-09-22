@@ -22,3 +22,6 @@ Predicciones
 22- Agrego animacion al carrucel de imagenes del index.html
 23- Agrego iniciar sesion al al header para acceder a las pantallas de administracion
 24- Agrego js para reutilizar una pantalla header y footer, las cuales separamos en 2 pantallas nuevas.
+25- Agrego una x para cerrar menu hamburguesa y media querie para al tocar afuera se cierra la barra lateral
+26- Ajusto breadcrumb de administrador para que se aline con los elementos del catalogo
+27- Agrego x para eliminar productos en la pantalla de administrador
