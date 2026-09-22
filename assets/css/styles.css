@@ -237,7 +237,7 @@ img {
     margin: 0.35rem 0;
 }
 
-#catalogo button {
+#catalogo button:not(.icono-eliminar) {
     width: 100%;
     padding: 0.5rem;
     border: none;
@@ -249,8 +249,8 @@ img {
     transition: background-color 0.2s;
 }
 
-#catalogo button:hover,
-#catalogo button:focus {
+#catalogo button:not(.icono-eliminar):hover,
+#catalogo button:not(.icono-eliminar):focus {
     background-color: var(--verde-oscuro);
 }
 
@@ -317,6 +317,35 @@ img {
     background-color: var(--verde-oscuro);
     color: #fff;
 }
+
+/* X para eliminar producto (interacción con JS en el futuro) */
+#catalogo .icono-eliminar {
+    position: absolute;
+    top: 0.75rem;
+    left: 0.75rem;
+    display: grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    background-color: transparent;
+    color: var(--bordo-oscuro);
+    cursor: pointer;
+    transition: box-shadow 0.2s;
+}
+
+#catalogo .icono-eliminar svg {
+    width: 18px;
+    height: 18px;
+}
+
+#catalogo .icono-eliminar:hover,
+#catalogo .icono-eliminar:focus {
+    box-shadow: 0 0 10px 2px var(--rosa-claro);
+}
+
 
 /* ---------- Pantalla de búsqueda y filtros ---------- */
 #resultados-busqueda {
@@ -473,6 +502,13 @@ img {
 .breadcrumb [aria-current="page"] {
     color: var(--bordo-oscuro);
     font-weight: 700;
+}
+
+/* Breadcrumb del administrador: alineado a la columna centrada del catálogo */
+.breadcrumb-admin {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 1.5rem 2rem 0;
 }
 
 #detalle-producto > article {
@@ -1038,6 +1074,16 @@ img {
     display: none;
 }
 
+/* Overlay para cerrar el menú al tocar por fuera (solo mobile) */
+.menu-overlay {
+    display: none;
+}
+
+/* Botón X para cerrar el menú (solo mobile) */
+.menu-cerrar {
+    display: none;
+}
+
 /* La sección "Buscar producto" del menú solo se muestra en el menú desplegable */
 .navbar li.buscar-producto {
     display: none;
@@ -1109,6 +1155,10 @@ img {
     /* ---------- Catálogo en móvil ---------- */
     #catalogo {
         padding: 1rem;
+    }
+
+    .breadcrumb-admin {
+        padding: 1rem 1rem 0;
     }
 
     #catalogo ul {
@@ -1301,6 +1351,15 @@ footer a:focus {
         padding: 2rem;
     }
 
+    .breadcrumb-admin {
+        padding: 2rem 2rem 0;
+    }
+
+    #catalogo .icono-eliminar {
+        top: 0rem;
+        left: 0.05rem;
+    }
+
     #galeria-fotos .fotos img {
         height: 240px;
     }
@@ -1451,6 +1510,34 @@ footer a:focus {
 
     #menu-movil-toggle:checked ~ .menu-hamburguesa .icono-cerrar {
         display: block;
+    }
+
+    /* Overlay: al tocar por fuera del panel se cierra el menú */
+    #menu-movil-toggle:checked ~ .menu-overlay {
+        display: block;
+        position: fixed;
+        inset: 0;
+        z-index: 35;
+        background-color: rgba(0, 0, 0, 0.4);
+    }
+
+    /* Botón X dentro del panel (esquina superior derecha) */
+    .menu-cerrar {
+        display: flex;
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        padding: 0.5rem;
+        background: transparent;
+        border: none;
+        color: var(--rosa-claro);
+        cursor: pointer;
+        z-index: 1;
+    }
+
+    .menu-cerrar svg {
+        width: 22px;
+        height: 22px;
     }
 
     /* El navbar se convierte en un panel que se desliza de manera horizontal */
