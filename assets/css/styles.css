@@ -293,6 +293,17 @@ img {
     border-radius: 12px;
 }
 
+/* La tarjeta del admin es un enlace completo hacia el detalle del producto */
+#catalogo .tarjeta-detalle {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+    height: 100%;
+    color: inherit;
+}
+
 #catalogo .icono-editar {
     position: absolute;
     top: 0.75rem;
@@ -607,6 +618,33 @@ img {
     background-color: var(--verde-oscuro);
 }
 
+.aviso-detalle {
+    background-color: var(--rosa-claro);
+    border-radius: 8px;
+    padding: 1rem;
+    text-align: center;
+    font-weight: 600;
+    color: var(--bordo-oscuro);
+}
+
+.acciones-detalle {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 1rem;
+}
+
+.acciones-detalle a {
+    font-weight: 600;
+    color: var(--verde-oscuro);
+}
+
+.acciones-detalle a:hover,
+.acciones-detalle a:focus {
+    color: var(--bordo-oscuro);
+    text-decoration: underline;
+}
+
 /* ---------- Productos relacionados ---------- */
 #relacionados {
     margin-top: 2rem;
@@ -624,6 +662,12 @@ img {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
     gap: 1rem;
+}
+
+#relacionados li > a {
+    display: flex;
+    height: 100%;
+    color: inherit;
 }
 
 #relacionados article {
@@ -674,8 +718,8 @@ img {
     color: var(--bordo-oscuro);
 }
 
-#relacionados a:hover,
-#relacionados a:focus {
+#relacionados a:hover h3,
+#relacionados a:focus h3 {
     text-decoration: underline;
 }
 
@@ -1054,6 +1098,24 @@ img {
     #editar-producto h1 {
         font-size: 2rem;
     }
+}
+
+/* Imagen actual en el formulario de edición */
+.imagen-actual-envoltorio {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1.25rem;
+}
+
+.imagen-actual-envoltorio img {
+    width: 160px;
+    height: 160px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 2px solid var(--rosa-claro);
+    background-color: var(--rosa-claro);
 }
 
 .sr-only {

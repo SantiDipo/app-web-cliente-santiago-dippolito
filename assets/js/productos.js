@@ -92,8 +92,17 @@ const CATALOGO_BASE = [
 ];
 
 const CLAVE_PRODUCTOS_NUEVOS = 'accesorios-shop-productos-nuevos';
+const CLAVE_PRODUCTOS_EDITADOS = 'accesorios-shop-productos-editados';
 const IMAGEN_RESERVA = 'assets/img/2.png';
 const STOCK_INICIAL = 10;
+const ETIQUETAS_CATEGORIA = {
+    relojes: 'Relojes',
+    bolsos: 'Bolsos',
+    gorras: 'Gorras',
+    lentes: 'Lentes de sol',
+    joyeria: 'Joyería',
+    accesorios: 'Accesorios'
+};
 
 const ICONO_EDITAR = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"></path><path d="m15 5 4 4"></path></svg>';
 const ICONO_ELIMINAR = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="6" y1="6" x2="18" y2="18"></line><line x1="18" y1="6" x2="6" y2="18"></line></svg>';
@@ -129,8 +138,45 @@ function guardarProductosNuevos(productos) {
     }
 }
 
+function leerProductosEditados() {
+    try {
+        const guardados = localStorage.getItem(CLAVE_PRODUCTOS_EDITADOS);
+        return guardados ? JSON.parse(guardados) : {};
+    } catch (error) {
+        console.error('No se pudieron leer los productos editados:', error);
+        return {};
+    }
+}
+
+function guardarProductosEditados(editados) {
+    try {
+        localStorage.setItem(CLAVE_PRODUCTOS_EDITADOS, JSON.stringify(editados));
+        return true;
+    } catch (error) {
+        console.error('No se pudieron guardar las ediciones:', error);
+        return false;
+    }
+}
+
 function obtenerCatalogo() {
-    return CATALOGO_BASE.concat(leerProductosNuevos());
+    const editados = leerProductosEditados();
+    const aplicarEdicion = producto => editados[producto.id]
+        ? Object.assign({}, producto, editados[producto.id])
+        : producto;
+
+    return CATALOGO_BASE.concat(leerProductosNuevos()).map(aplicarEdicion);
+}
+
+function buscarProducto(id) {
+    return obtenerCatalogo().find(producto => producto.id === id) || null;
+}
+
+function actualizarProducto(id, cambios) {
+    const editados = leerProductosEditados();
+    editados[id] = Object.assign({}, editados[id] || {}, cambios, {
+        fechaModificacion: new Date().toISOString()
+    });
+    return guardarProductosEditados(editados);
 }
 
 function generarIdProducto(nombre, catalogo) {
@@ -238,7 +284,7 @@ function crearTarjetaProducto(producto) {
     const item = document.createElement('li');
 
     const enlace = document.createElement('a');
-    enlace.href = 'producto.html';
+    enlace.href = 'producto.html?id=' + encodeURIComponent(producto.id);
 
     const articulo = document.createElement('article');
 
@@ -291,7 +337,7 @@ function crearTarjetaProductoAdmin(producto) {
 
     const enlaceEditar = document.createElement('a');
     enlaceEditar.className = 'icono-editar';
-    enlaceEditar.href = 'editar-producto.html';
+    enlaceEditar.href = 'editar-producto.html?id=' + encodeURIComponent(producto.id);
     enlaceEditar.title = 'Editar producto';
     enlaceEditar.setAttribute('aria-label', 'Editar ' + producto.nombre);
     enlaceEditar.innerHTML = ICONO_EDITAR;
@@ -318,7 +364,12 @@ function crearTarjetaProductoAdmin(producto) {
     const parrafoPrecio = document.createElement('p');
     parrafoPrecio.textContent = formatearPrecio(producto.precio);
 
-    articulo.append(enlaceEditar, botonEliminar, titulo, imagen, parrafoDescripcion, parrafoPrecio);
+    const enlaceDetalle = document.createElement('a');
+    enlaceDetalle.className = 'tarjeta-detalle';
+    enlaceDetalle.href = 'producto.html?id=' + encodeURIComponent(producto.id) + '&admin=1';
+    enlaceDetalle.append(titulo, imagen, parrafoDescripcion, parrafoPrecio);
+
+    articulo.append(enlaceEditar, botonEliminar, enlaceDetalle);
     item.append(articulo);
 
     return item;
@@ -506,10 +557,199 @@ function inicializarFormularioNuevoProducto() {
     });
 }
 
+function crearTarjetaRelacionado(producto, esAdmin) {
+    const item = document.createElement('li');
+
+    const enlace = document.createElement('a');
+    enlace.href = 'producto.html?id=' + encodeURIComponent(producto.id) + (esAdmin ? '&admin=1' : '');
+
+    const articulo = document.createElement('article');
+
+    const titulo = document.createElement('h3');
+    titulo.textContent = producto.nombre;
+
+    const imagen = document.createElement('img');
+    imagen.src = producto.imagen;
+    imagen.alt = 'Imagen del ' + producto.nombre.toLowerCase();
+    imagen.width = 200;
+    imagen.height = 200;
+
+    const parrafoPrecio = document.createElement('p');
+    parrafoPrecio.textContent = formatearPrecio(producto.precio);
+
+    const textoDetalle = document.createElement('span');
+    textoDetalle.textContent = 'Ver detalle';
+
+    articulo.append(titulo, imagen, parrafoPrecio, textoDetalle);
+    enlace.append(articulo);
+    item.append(enlace);
+
+    return item;
+}
+
+function obtenerProductosRelacionados(producto) {
+    const catalogo = obtenerCatalogo();
+    const mismaCategoria = catalogo.filter(
+        otro => otro.id !== producto.id && otro.categoria === producto.categoria
+    );
+    const resto = catalogo.filter(
+        otro => otro.id !== producto.id && otro.categoria !== producto.categoria
+    );
+    return mismaCategoria.concat(resto).slice(0, 3);
+}
+
+function mostrarMensajeDetalle(mensaje) {
+    const aviso = document.querySelector('#aviso-detalle');
+    if (!aviso) {
+        return;
+    }
+    aviso.textContent = mensaje;
+    aviso.hidden = false;
+}
+
+function inicializarDetalleProducto() {
+    const contenedor = document.querySelector('#detalle-producto');
+    if (!contenedor) {
+        return;
+    }
+
+    const parametros = new URLSearchParams(window.location.search);
+    const id = parametros.get('id');
+    const esAdmin = parametros.get('admin') === '1';
+    const producto = id ? buscarProducto(id) : null;
+
+    if (!producto) {
+        mostrarMensajeDetalle(
+            id
+                ? 'No encontramos el producto que buscás. Volvé al catálogo para ver los disponibles.'
+                : 'Elegí un producto desde el catálogo para ver su detalle.'
+        );
+        return;
+    }
+
+    document.title = producto.nombre + ' | Accesorios Shop';
+    document.querySelector('#miga-producto').textContent = producto.nombre;
+
+    const imagen = document.querySelector('#detalle-imagen');
+    imagen.src = producto.imagen;
+    imagen.alt = 'Imagen del ' + producto.nombre.toLowerCase();
+
+    document.querySelector('#detalle-nombre').textContent = producto.nombre;
+    document.querySelector('#detalle-precio').textContent = formatearPrecio(producto.precio);
+    document.querySelector('#detalle-descripcion').textContent = producto.descripcion;
+
+    const caracteristicas = document.querySelector('#detalle-caracteristicas');
+    const datos = [
+        'Categoría: ' + (ETIQUETAS_CATEGORIA[producto.categoria] || producto.categoria),
+        'ID del producto: ' + producto.id
+    ];
+    if (producto.fechaCreacion) {
+        datos.push('Creado el: ' + new Date(producto.fechaCreacion).toLocaleDateString('es-AR'));
+    }
+    if (producto.fechaModificacion) {
+        datos.push('Última modificación: ' + new Date(producto.fechaModificacion).toLocaleDateString('es-AR'));
+    }
+    caracteristicas.replaceChildren(...datos.map(dato => {
+        const item = document.createElement('li');
+        item.textContent = dato;
+        return item;
+    }));
+
+    const stock = document.querySelector('#detalle-stock');
+    stock.textContent = producto.stock > 0
+        ? 'Stock disponible: ' + producto.stock + ' unidades'
+        : 'Producto agotado';
+
+    document.querySelector('#detalle-id').value = producto.id;
+    const campoCantidad = document.querySelector('#cantidad');
+    campoCantidad.max = Math.max(producto.stock, 1);
+    const formulario = document.querySelector('#detalle-formulario');
+    if (producto.stock <= 0) {
+        formulario.querySelector('button[type="submit"]').disabled = true;
+    }
+
+    document.querySelector('#enlace-volver-admin').hidden = !esAdmin;
+    const enlaceEditar = document.querySelector('#enlace-editar-admin');
+    enlaceEditar.hidden = !esAdmin;
+    enlaceEditar.href = 'editar-producto.html?id=' + encodeURIComponent(producto.id);
+
+    document.querySelector('#detalle-articulo').hidden = false;
+
+    const relacionados = document.querySelector('#relacionados');
+    const lista = relacionados.querySelector('ul');
+    const productosRelacionados = obtenerProductosRelacionados(producto);
+    lista.replaceChildren(...productosRelacionados.map(relacionado =>
+        crearTarjetaRelacionado(relacionado, esAdmin)
+    ));
+    relacionados.hidden = productosRelacionados.length === 0;
+}
+
+function inicializarFormularioEditarProducto() {
+    const formulario = document.querySelector('#editar-producto form');
+
+    if (!formulario) {
+        return;
+    }
+
+    const id = new URLSearchParams(window.location.search).get('id');
+    const producto = id ? buscarProducto(id) : null;
+
+    if (!producto) {
+        window.location.href = 'administrador.html';
+        return;
+    }
+
+    formulario.querySelector('#nombre').value = producto.nombre;
+    formulario.querySelector('#descripcion').value = producto.descripcion;
+    formulario.querySelector('#precio').value = producto.precio;
+    formulario.querySelector('#categoria').value = producto.categoria;
+    formulario.querySelector('#stock').value = producto.stock;
+
+    const imagenActual = document.querySelector('#imagen-actual');
+    if (imagenActual) {
+        imagenActual.src = producto.imagen;
+        imagenActual.alt = 'Imagen actual del ' + producto.nombre.toLowerCase();
+    }
+
+    formulario.addEventListener('submit', async evento => {
+        evento.preventDefault();
+
+        const archivo = formulario.querySelector('#imagen').files[0];
+        let imagen = producto.imagen;
+
+        if (archivo) {
+            try {
+                imagen = await procesarImagen(archivo);
+            } catch (error) {
+                alert(error.message);
+                return;
+            }
+        }
+
+        const actualizado = actualizarProducto(producto.id, {
+            nombre: formulario.querySelector('#nombre').value.trim(),
+            descripcion: formulario.querySelector('#descripcion').value.trim(),
+            precio: Number(formulario.querySelector('#precio').value),
+            categoria: formulario.querySelector('#categoria').value,
+            stock: Number(formulario.querySelector('#stock').value),
+            imagen: imagen
+        });
+
+        if (!actualizado) {
+            alert('No se pudieron guardar los cambios. Revisá los datos e intentá nuevamente.');
+            return;
+        }
+
+        window.location.href = 'administrador.html';
+    });
+}
+
 function iniciarPagina() {
     renderizarCatalogo();
     inicializarFiltrosBusqueda();
     inicializarFormularioNuevoProducto();
+    inicializarDetalleProducto();
+    inicializarFormularioEditarProducto();
 }
 
 if (document.readyState === 'loading') {
