@@ -15,71 +15,46 @@
             <ol>
                 <li><a href="index.html">Inicio</a></li>
                 <li><a href="index.html#catalogo">Catálogo</a></li>
-                <li aria-current="page">Reloj clásico</li>
+                <li aria-current="page" id="miga-producto">Producto</li>
             </ol>
         </nav>
 
-        <article>
-            <img src="https://images.unsplash.com/photo-1777457900943-7fd2f7c42529?q=85&fm=jpg&crop=entropy&cs=srgb&w=800" alt="Imagen del reloj clásico" width="400" height="400">
+        <p class="aviso-detalle" id="aviso-detalle" hidden></p>
+
+        <article id="detalle-articulo" hidden>
+            <img id="detalle-imagen" src="" alt="" width="400" height="400">
 
             <div class="detalle-info">
-                <h1>Reloj clásico</h1>
-                <p class="precio">$49.999</p>
-                <p class="descripcion">
-                    Reloj analógico con correa de cuero genuina y movimiento de cuarzo.
-                    Ideal para uso diario y ocasiones formales.
-                </p>
+                <h1 id="detalle-nombre"></h1>
+                <p class="precio" id="detalle-precio"></p>
+                <p class="descripcion" id="detalle-descripcion"></p>
 
-                <ul class="caracteristicas">
-                    <li>Correa de cuero genuino</li>
-                    <li>Movimiento de cuarzo japonés</li>
-                    <li>Resistencia al agua 3 ATM</li>
-                    <li>Garantía de 12 meses</li>
-                </ul>
+                <ul class="caracteristicas" id="detalle-caracteristicas"></ul>
 
-                <p class="stock">Stock disponible: 10 unidades</p>
+                <p class="stock" id="detalle-stock"></p>
 
-                <form action="carrito.html" method="get">
+                <form action="carrito.html" method="get" id="detalle-formulario">
                     <label for="cantidad">Cantidad</label>
-                    <input type="number" id="cantidad" name="cantidad" value="1" min="1" max="10">
-                    <input type="hidden" name="producto" value="reloj-clasico">
+                    <input type="number" id="cantidad" name="cantidad" value="1" min="1">
+                    <input type="hidden" name="producto" id="detalle-id" value="">
                     <button type="submit">Agregar al carrito</button>
                 </form>
+
+                <p class="acciones-detalle">
+                    <a href="administrador.html" id="enlace-volver-admin" hidden>Volver a administración</a>
+                    <a href="editar-producto.html" id="enlace-editar-admin" hidden>Editar este producto</a>
+                </p>
             </div>
         </article>
 
-        <section id="relacionados" aria-labelledby="titulo-relacionados">
+        <section id="relacionados" aria-labelledby="titulo-relacionados" hidden>
             <h2 id="titulo-relacionados">Productos relacionados</h2>
-            <ul>
-                <li>
-                    <article>
-                        <h3>Gorra deportiva</h3>
-                        <img src="https://images.unsplash.com/photo-1588850561407-ed78c282e89b?q=85&fm=jpg&crop=entropy&cs=srgb&w=800" alt="Imagen de la gorra deportiva" width="200" height="200">
-                        <p>$12.999</p>
-                        <a href="#">Ver detalle</a>
-                    </article>
-                </li>
-                <li>
-                    <article>
-                        <h3>Bolso de mano</h3>
-                        <img src="https://images.unsplash.com/photo-1598532163257-ae3c6b2524b6?q=85&fm=jpg&crop=entropy&cs=srgb&w=800" alt="Imagen del bolso de mano" width="200" height="200">
-                        <p>$39.999</p>
-                        <a href="#">Ver detalle</a>
-                    </article>
-                </li>
-                <li>
-                    <article>
-                        <h3>Lentes de sol</h3>
-                        <img src="https://images.unsplash.com/photo-1584036553516-bf83210aa16c?q=85&fm=jpg&crop=entropy&cs=srgb&w=800" alt="Imagen de los lentes de sol" width="200" height="200">
-                        <p>$25.999</p>
-                        <a href="#">Ver detalle</a>
-                    </article>
-                </li>
-            </ul>
+            <ul></ul>
         </section>
     </main>
 
     <footer></footer>
     <script src="assets/js/header-footer.js"></script>
+    <script src="assets/js/productos.js"></script>
 </body>
 </html>

@@ -1,6 +1,6 @@
 # Documentación de `assets/js/productos.js`
 
-Módulo encargado de centralizar el catálogo de productos, renderizarlo en las páginas y permitir al administrador crear productos nuevos. Todo el catálogo que antes estaba duplicado en HTML (`index.html`, `busqueda.html`, `administrador.html`) ahora se genera desde este archivo.
+Módulo encargado de centralizar el catálogo de productos, renderizarlo en las páginas, mostrar el **detalle personalizado de cada producto** (`producto.html?id=<id>`) y permitir al administrador crear y **editar** productos. Todo el catálogo que antes estaba duplicado en HTML (`index.html`, `busqueda.html`, `administrador.html`) ahora se genera desde este archivo, y `producto.html` dejó de estar hardcodeado: se llena dinámicamente desde las constantes del catálogo.
 
 **Regla del proyecto:** no se usa `var` en ningún lado; solo `const` (datos/módulo) y `let` (variables reasignables). Las funciones son declaraciones `function` a nivel superior, por lo que quedan disponibles de forma global en cualquier página que incluya el script.
 
@@ -12,8 +12,10 @@ Módulo encargado de centralizar el catálogo de productos, renderizarlo en las 
 |---|---|
 | `CATALOGO_BASE` | Array con los 10 productos originales. Cada producto: `{ id, nombre, descripcion, precio, imagen, categoria, stock }`. El `precio` es un **número** (ej: `49999`), no el string `"$49.999"` como estaba en el HTML. |
 | `CLAVE_PRODUCTOS_NUEVOS` | Clave bajo la que `localStorage` guarda los productos creados por el admin: `'accesorios-shop-productos-nuevos'`. |
+| `CLAVE_PRODUCTOS_EDITADOS` | Clave bajo la que `localStorage` guarda las **ediciones** (un objeto `{ id: cambios }`): `'accesorios-shop-productos-editados'`. Permite editar productos base y nuevos sin tocar `CATALOGO_BASE`. |
 | `IMAGEN_RESERVA` | Ruta de imagen por defecto (`assets/img/2.png`) si un producto se crea sin imagen. |
 | `STOCK_INICIAL` | `10`. Stock que se asigna si no se recibe uno válido. |
+| `ETIQUETAS_CATEGORIA` | Objeto que mapea el id de categoría a su nombre legible para mostrar en el detalle (ej: `joyeria` → `"Joyería"`). |
 | `ICONO_EDITAR` / `ICONO_ELIMINAR` | Strings con los SVG de los iconos del panel de administración (mismos que tenía el HTML estático). |
 
 ---
@@ -47,15 +49,38 @@ Módulo encargado de centralizar el catálogo de productos, renderizarlo en las 
 - **Devuelve:** `true` si se guardó; `false` si falló (típicamente por cuota de storage llena, lo más probable si la imagen pesa demasiado — por eso existe `procesarImagen`).
 - **Dónde se usa:** dentro de `crearProducto`, para decidir si el alta fue exitosa.
 
+### `leerProductosEditados()`
+- **No recibe nada.**
+- **Hace:** lee la clave `CLAVE_PRODUCTOS_EDITADOS` de `localStorage` y la parsea con `JSON.parse`.
+- **Devuelve:** un **objeto** cuyas claves son ids de producto y cuyos valores son los campos modificados (ej: `{ 'reloj-clasico': { precio: 55000 } }`), o `{}` si no hay nada o el JSON está corrupto (`try/catch` con `console.error`).
+- **Por qué:** las ediciones se guardan por separado de los productos nuevos para poder sobreescribir campos de cualquier producto (base o creado) sin mutar `CATALOGO_BASE`.
+
+### `guardarProductosEditados(editados)`
+- **Recibe:** el objeto completo de ediciones.
+- **Hace:** `localStorage.setItem` con `JSON.stringify`.
+- **Devuelve:** `true` si se guardó; `false` si falló.
+
 ---
 
-## 4. Catálogo y alta de productos
+## 4. Catálogo, búsqueda y edición de productos
 
 ### `obtenerCatalogo()`
 - **No recibe nada.**
-- **Hace:** une `CATALOGO_BASE` con `leerProductosNuevos()` usando `concat` (no muta el array base).
-- **Devuelve:** array completo del catálogo: los 10 originales + los creados.
-- **Dónde se usa:** en `renderizarCatalogo`, `generarIdProducto` y en los tests.
+- **Hace:** une `CATALOGO_BASE` con `leerProductosNuevos()` usando `concat` (no muta el array base) y luego aplica las ediciones guardadas: si `leerProductosEditados()` tiene cambios para el id de un producto, hace `Object.assign({}, producto, ediciones)` (también sin mutar el original).
+- **Devuelve:** array completo del catálogo: los 10 originales + los creados, con sus ediciones aplicadas.
+- **Dónde se usa:** en `renderizarCatalogo`, `generarIdProducto`, `buscarProducto`, `obtenerProductosRelacionados` y en los tests.
+
+### `buscarProducto(id)`
+- **Recibe:** el `id` de un producto (string).
+- **Hace:** busca en `obtenerCatalogo()` el producto cuyo `id` coincida.
+- **Devuelve:** el objeto producto o `null` si no existe.
+- **Dónde se usa:** en `inicializarDetalleProducto` (para llenar `producto.html`) y en `inicializarFormularioEditarProducto` (para precargar `editar-producto.html`).
+
+### `actualizarProducto(id, cambios)`
+- **Recibe:** el `id` del producto y un objeto con los campos a modificar (ej: `{ nombre, descripcion, precio, categoria, stock, imagen }`).
+- **Hace:** mergea los cambios con lo que ya hubiera editado para ese id (o con `{}` si es la primera vez), agrega `fechaModificacion` con la fecha/hora actual en ISO y guarda el objeto con `guardarProductosEditados`. **No modifica** `CATALOGO_BASE` ni el array de productos nuevos: el merge se aplica en `obtenerCatalogo`.
+- **Devuelve:** `true` si se guardó; `false` si falló el `localStorage`.
+- **Dónde se usa:** en el `submit` de `editar-producto.html`.
 
 ### `generarIdProducto(nombre, catalogo)`
 - **Recibe:** el nombre del producto y el catálogo completo (para chequear duplicados).
