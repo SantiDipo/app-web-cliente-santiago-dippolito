@@ -996,10 +996,12 @@ img {
 #nuevo-producto input[type="number"],
 #nuevo-producto textarea,
 #nuevo-producto input[type="file"],
+#nuevo-producto select,
 #editar-producto input[type="text"],
 #editar-producto input[type="number"],
 #editar-producto textarea,
-#editar-producto input[type="file"] {
+#editar-producto input[type="file"],
+#editar-producto select {
     padding: 0.55rem 0.75rem;
     border: 2px solid var(--bordo-oscuro);
     border-radius: 8px;
@@ -1016,8 +1018,10 @@ img {
 
 #nuevo-producto input:focus,
 #nuevo-producto textarea:focus,
+#nuevo-producto select:focus,
 #editar-producto input:focus,
-#editar-producto textarea:focus {
+#editar-producto textarea:focus,
+#editar-producto select:focus {
     outline: none;
     border-color: var(--verde-oscuro);
     box-shadow: 0 0 0 3px rgba(228, 159, 182, 0.4);
