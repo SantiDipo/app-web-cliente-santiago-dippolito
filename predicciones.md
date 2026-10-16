@@ -25,3 +25,4 @@ Predicciones
 25- Agrego una x para cerrar menu hamburguesa y media querie para al tocar afuera se cierra la barra lateral
 26- Ajusto breadcrumb de administrador para que se aline con los elementos del catalogo
 27- Agrego x para eliminar productos en la pantalla de administrador
+28- Genero proceso de creacion de productos mediante javascript
