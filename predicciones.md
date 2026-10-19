@@ -28,3 +28,4 @@ Predicciones
 28- Genero proceso de creacion de productos mediante javascript
 29- Agrego ver detalle personalizado por producto con javascript
 30- Mejoro UI para mejor acceso a ver detalles desde el administrador y tarjetas de ver detalle
+31- Agrego funcionalidad de delete a la pantalla de administracion de productos para borrar productos
