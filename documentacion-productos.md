@@ -1,6 +1,6 @@
 # Documentación de `assets/js/productos.js`
 
-Módulo encargado de centralizar el catálogo de productos, renderizarlo en las páginas, mostrar el **detalle personalizado de cada producto** (`producto.html?id=<id>`) y permitir al administrador crear y **editar** productos. Todo el catálogo que antes estaba duplicado en HTML (`index.html`, `busqueda.html`, `administrador.html`) ahora se genera desde este archivo, y `producto.html` dejó de estar hardcodeado: se llena dinámicamente desde las constantes del catálogo.
+Módulo encargado de centralizar el catálogo de productos, renderizarlo en las páginas, mostrar el **detalle personalizado de cada producto** (`producto.html?id=<id>`) y permitir al administrador crear, **editar** y **eliminar** productos. Todo el catálogo que antes estaba duplicado en HTML (`index.html`, `busqueda.html`, `administrador.html`) ahora se genera desde este archivo, y `producto.html` dejó de estar hardcodeado: se llena dinámicamente desde las constantes del catálogo.
 
 **Regla del proyecto:** no se usa `var` en ningún lado; solo `const` (datos/módulo) y `let` (variables reasignables). Las funciones son declaraciones `function` a nivel superior, por lo que quedan disponibles de forma global en cualquier página que incluya el script.
 
@@ -13,6 +13,7 @@ Módulo encargado de centralizar el catálogo de productos, renderizarlo en las 
 | `CATALOGO_BASE` | Array con los 10 productos originales. Cada producto: `{ id, nombre, descripcion, precio, imagen, categoria, stock }`. El `precio` es un **número** (ej: `49999`), no el string `"$49.999"` como estaba en el HTML. |
 | `CLAVE_PRODUCTOS_NUEVOS` | Clave bajo la que `localStorage` guarda los productos creados por el admin: `'accesorios-shop-productos-nuevos'`. |
 | `CLAVE_PRODUCTOS_EDITADOS` | Clave bajo la que `localStorage` guarda las **ediciones** (un objeto `{ id: cambios }`): `'accesorios-shop-productos-editados'`. Permite editar productos base y nuevos sin tocar `CATALOGO_BASE`. |
+| `CLAVE_PRODUCTOS_ELIMINADOS` | Clave bajo la que `localStorage` guarda los **ids eliminados** (un array de strings): `'accesorios-shop-productos-eliminados'`. Como `CATALOGO_BASE` vive en el código, para dar de baja un producto original se anota su id acá en vez de borrar el array base. |
 | `IMAGEN_RESERVA` | Ruta de imagen por defecto (`assets/img/2.png`) si un producto se crea sin imagen. |
 | `STOCK_INICIAL` | `10`. Stock que se asigna si no se recibe uno válido. |
 | `ETIQUETAS_CATEGORIA` | Objeto que mapea el id de categoría a su nombre legible para mostrar en el detalle (ej: `joyeria` → `"Joyería"`). |
@@ -60,15 +61,27 @@ Módulo encargado de centralizar el catálogo de productos, renderizarlo en las 
 - **Hace:** `localStorage.setItem` con `JSON.stringify`.
 - **Devuelve:** `true` si se guardó; `false` si falló.
 
+### `leerProductosEliminados()`
+- **No recibe nada.**
+- **Hace:** lee la clave `CLAVE_PRODUCTOS_ELIMINADOS` de `localStorage` y la parsea con `JSON.parse`.
+- **Devuelve:** array de ids (strings) de productos dados de baja, o `[]` si no hay nada, si el JSON está corrupto o si el valor guardado no es un array (`Array.isArray`).
+- **Por qué:** es el "registro de bajas" que permite ocultar productos del `CATALOGO_BASE` sin modificar el código fuente.
+
+### `guardarProductosEliminados(ids)`
+- **Recibe:** el array completo de ids eliminados.
+- **Hace:** `localStorage.setItem` con `JSON.stringify`.
+- **Devuelve:** `true` si se guardó; `false` si falló (ej: cuota de storage llena).
+
 ---
 
 ## 4. Catálogo, búsqueda y edición de productos
 
 ### `obtenerCatalogo()`
 - **No recibe nada.**
-- **Hace:** une `CATALOGO_BASE` con `leerProductosNuevos()` usando `concat` (no muta el array base) y luego aplica las ediciones guardadas: si `leerProductosEditados()` tiene cambios para el id de un producto, hace `Object.assign({}, producto, ediciones)` (también sin mutar el original).
-- **Devuelve:** array completo del catálogo: los 10 originales + los creados, con sus ediciones aplicadas.
+- **Hace:** une `CATALOGO_BASE` con `leerProductosNuevos()` usando `concat` (no muta el array base), **descarta los ids que estén en `leerProductosEliminados()`** (`filter`) y luego aplica las ediciones guardadas: si `leerProductosEditados()` tiene cambios para el id de un producto, hace `Object.assign({}, producto, ediciones)` (también sin mutar el original).
+- **Devuelve:** array completo del catálogo: los 10 originales menos los eliminados + los creados, con sus ediciones aplicadas.
 - **Dónde se usa:** en `renderizarCatalogo`, `generarIdProducto`, `buscarProducto`, `obtenerProductosRelacionados` y en los tests.
+- **Importante:** como todas las páginas pasan por esta función, un producto eliminado desaparece del índice, de la búsqueda, del detalle y de los relacionados al mismo tiempo.
 
 ### `buscarProducto(id)`
 - **Recibe:** el `id` de un producto (string).
@@ -112,6 +125,23 @@ Módulo encargado de centralizar el catálogo de productos, renderizarlo en las 
   // producto.id === 'gorra-urbana'
   ```
 
+### `eliminarProducto(id)`
+> **Es la función del administrador para eliminar productos** (también pensada para migrar luego a una base de datos: sólo hay que reemplazar su persistencia).
+
+- **Recibe:** el `id` del producto (string).
+- **Hace:**
+  1. **Valida:** si el `id` viene vacío o no corresponde a ningún producto del catálogo (ni base ni nuevo), hace `console.error` y devuelve `false` sin tocar nada.
+  2. **Si es un producto creado por el admin:** lo saca del array de `leerProductosNuevos()` (`splice`) y lo persiste con `guardarProductosNuevos`. Si ese guardado falla, devuelve `false`.
+  3. **Si es un producto del catálogo base:** agrega su id a `leerProductosEliminados()` (evitando duplicados) y lo guarda con `guardarProductosEliminados`. No se modifica `CATALOGO_BASE`.
+  4. **Limpia las ediciones:** borra `editados[id]` para que no queden cambios huérfanos (si ese guardado falla, sólo hace `console.error`, porque el producto ya se eliminó).
+- **Devuelve:** `true` si el producto quedó eliminado; `false` si falló el `localStorage` o el id no existía.
+- **Ejemplo:**
+  ```js
+  eliminarProducto('reloj-clasico');      // producto base → queda en la lista de eliminados
+  eliminarProducto('gorra-urbana');       // producto nuevo → se borra del todo
+  ```
+- **Nota de migración:** la función es la única que conoce *cómo* se persiste la baja, por lo que al pasar a una DB sólo hay que cambiar su interior por una llamada al backend (mientras `obtenerCatalogo()` siga siendo el filtro central, el resto de la app no cambia).
+
 ---
 
 ## 5. Filtros de `busqueda.html`
@@ -152,6 +182,7 @@ Las tres funciones siguientes **no usan `innerHTML` con interpolación**; constr
 - Igual que la anterior pero **sin enlace ni form de carrito**, y con dos controles al inicio del `<article>`:
   - `a.icono-editar` → `editar-producto.html` con `aria-label="Editar <nombre>"` e ícono de lápiz.
   - `button.icono-eliminar` con `aria-label="Eliminar <nombre>"` e ícono de equis.
+- El botón de eliminar **tiene la interacción cableada**: al hacer clic pide confirmación con `window.confirm` (así un clic equivocado no borra nada), llama a `eliminarProducto(id)` y, si salió bien, vuelve a llamar `renderizarCatalogo()` para repintar la lista sin ese producto y muestra el mensaje de estado con `mostrarMensajeAdmin('Se eliminó "…" del catálogo.')`. Si falla, muestra un mensaje de error sin repintar.
 - Los `innerHTML` de los iconos son SVGs fijos de las constantes (no hay datos de usuario ahí).
 
 ### `crearTarjetaNuevoProducto()`
@@ -162,11 +193,16 @@ Las tres funciones siguientes **no usan `innerHTML` con interpolación**; constr
 
 ### `renderizarCatalogo()`
 Función central de pintado. Pasos:
-1. Busca `#catalogo` y su `ul`. Si la página no tiene catálogo, sale.
+1. Busca `#catalogo` y su `ul`. Si la página no tiene catálogo, sale. Antes de repintar, **oculta y vacía el aviso `#aviso-admin`** para que un mensaje de estado viejo no quede colgado cuando cambie la lista.
 2. Detecta el modo: si la sección tiene la clase `admin` → **modo administrador**; si además existe `#filtros-busqueda form` → aplica `aplicarFiltros` con la `URLSearchParams` de la ventana.
 3. Vuelca la lista con `lista.replaceChildren(...)` (borra lo anterior y agrega una tarjeta por producto).
 4. En modo admin, agrega al final la tarjeta de "nuevo producto".
 5. Actualiza el contador de resultados.
+
+### `mostrarMensajeAdmin(mensaje)`
+- **Recibe:** el texto a mostrar.
+- **Hace:** si existe el párrafo `#aviso-admin` (`role="status"`, sólo está en `administrador.html`), le escribe el mensaje y lo desoculta (`hidden = false`). Si no existe, no hace nada.
+- **Para qué sirve:** dar feedback accesible (lectores de pantalla anuncian el cambio por el `aria-live="polite"`) de que un producto se eliminó o de que hubo un error.
 
 ---
 
@@ -221,13 +257,19 @@ Esto garantiza que corra después de que el HTML esté parseado, sin importar d�
 Página carga
    └─ iniciarPagina()
         ├─ renderizarCatalogo()
-        │    ├─ obtenerCatalogo() = CATALOGO_BASE + leerProductosNuevos()
+        │    ├─ obtenerCatalogo() = (CATALOGO_BASE + leerProductosNuevos()) − leerProductosEliminados() + ediciones
         │    ├─ aplicarFiltros()  (sólo en busqueda.html)
         │    └─ crearTarjetaProducto() / crearTarjetaProductoAdmin() + crearTarjetaNuevoProducto()
         ├─ inicializarFiltrosBusqueda()   (busqueda.html)
         └─ inicializarFormularioNuevoProducto()   (nuevo-producto.html)
              └─ submit → procesarImagen() → crearProducto() → guardarProductosNuevos()
                                                               └─ redirect a administrador.html
+
+   (admin) clic en la X de una tarjeta
+      └─ confirm() → eliminarProducto(id)
+           ├─ producto nuevo → guardarProductosNuevos()
+           ├─ producto base  → guardarProductosEliminados()
+           └─ limpia las ediciones del id → renderizarCatalogo() + mostrarMensajeAdmin()
 ```
 
 **Archivos que incluyen el script:** `index.html`, `busqueda.html`, `administrador.html` y `nuevo-producto.html` (siempre después de `header-footer.js`). En el resto de las páginas el script no hace nada porque no existe `#catalogo` ni el form de alta.

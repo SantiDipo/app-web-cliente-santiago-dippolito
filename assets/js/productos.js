@@ -93,6 +93,7 @@ const CATALOGO_BASE = [
 
 const CLAVE_PRODUCTOS_NUEVOS = 'accesorios-shop-productos-nuevos';
 const CLAVE_PRODUCTOS_EDITADOS = 'accesorios-shop-productos-editados';
+const CLAVE_PRODUCTOS_ELIMINADOS = 'accesorios-shop-productos-eliminados';
 const IMAGEN_RESERVA = 'assets/img/2.png';
 const STOCK_INICIAL = 10;
 const ETIQUETAS_CATEGORIA = {
@@ -158,13 +159,38 @@ function guardarProductosEditados(editados) {
     }
 }
 
+function leerProductosEliminados() {
+    try {
+        const guardados = localStorage.getItem(CLAVE_PRODUCTOS_ELIMINADOS);
+        const ids = guardados ? JSON.parse(guardados) : [];
+        return Array.isArray(ids) ? ids : [];
+    } catch (error) {
+        console.error('No se pudieron leer los productos eliminados:', error);
+        return [];
+    }
+}
+
+function guardarProductosEliminados(ids) {
+    try {
+        localStorage.setItem(CLAVE_PRODUCTOS_ELIMINADOS, JSON.stringify(ids));
+        return true;
+    } catch (error) {
+        console.error('No se pudieron guardar los productos eliminados:', error);
+        return false;
+    }
+}
+
 function obtenerCatalogo() {
     const editados = leerProductosEditados();
+    const eliminados = leerProductosEliminados();
     const aplicarEdicion = producto => editados[producto.id]
         ? Object.assign({}, producto, editados[producto.id])
         : producto;
 
-    return CATALOGO_BASE.concat(leerProductosNuevos()).map(aplicarEdicion);
+    return CATALOGO_BASE
+        .concat(leerProductosNuevos())
+        .filter(producto => !eliminados.includes(producto.id))
+        .map(aplicarEdicion);
 }
 
 function buscarProducto(id) {
@@ -207,8 +233,15 @@ function crearProducto(datos) {
         return null;
     }
 
+    // Los ids de productos eliminados siguen "ocupados": si no, crear un
+    // producto con el mismo nombre que uno borrado reviviría al anterior
+    // (obtenerCatalogo() lo seguiría filtrando por estar en la lista de bajas).
+    const idsOcupados = obtenerCatalogo().concat(
+        leerProductosEliminados().map(idEliminado => ({ id: idEliminado }))
+    );
+
     const producto = {
-        id: generarIdProducto(nombre, obtenerCatalogo()),
+        id: generarIdProducto(nombre, idsOcupados),
         nombre: nombre,
         descripcion: descripcion,
         precio: precio,
@@ -226,6 +259,52 @@ function crearProducto(datos) {
     }
 
     return producto;
+}
+
+function eliminarProducto(id) {
+    const idProducto = String(id || '').trim();
+
+    if (!idProducto) {
+        console.error('No se indicó un producto para eliminar.');
+        return false;
+    }
+
+    const esBase = CATALOGO_BASE.some(producto => producto.id === idProducto);
+    const productosNuevos = leerProductosNuevos();
+    const indiceNuevo = productosNuevos.findIndex(producto => producto.id === idProducto);
+
+    if (indiceNuevo >= 0) {
+        // Los productos creados por el admin se borran del todo.
+        productosNuevos.splice(indiceNuevo, 1);
+        if (!guardarProductosNuevos(productosNuevos)) {
+            return false;
+        }
+    } else if (esBase) {
+        // El catálogo base vive en el código, así que se registra la baja
+        // para que obtenerCatalogo() lo deje de mostrar.
+        const eliminados = leerProductosEliminados();
+
+        if (!eliminados.includes(idProducto)) {
+            eliminados.push(idProducto);
+            if (!guardarProductosEliminados(eliminados)) {
+                return false;
+            }
+        }
+    } else {
+        console.error('No existe un producto con id:', idProducto);
+        return false;
+    }
+
+    // Las ediciones del producto ya no aplican a nada.
+    const editados = leerProductosEditados();
+    if (editados[idProducto]) {
+        delete editados[idProducto];
+        if (!guardarProductosEditados(editados)) {
+            console.error('El producto se eliminó, pero no se pudieron limpiar sus ediciones.');
+        }
+    }
+
+    return true;
 }
 
 function fechaProducto(producto) {
@@ -348,6 +427,23 @@ function crearTarjetaProductoAdmin(producto) {
     botonEliminar.title = 'Eliminar producto';
     botonEliminar.setAttribute('aria-label', 'Eliminar ' + producto.nombre);
     botonEliminar.innerHTML = ICONO_ELIMINAR;
+    botonEliminar.addEventListener('click', () => {
+        const confirmado = window.confirm(
+            '¿Eliminar "' + producto.nombre + '" del catálogo? Esta acción no se puede deshacer.'
+        );
+
+        if (!confirmado) {
+            return;
+        }
+
+        if (!eliminarProducto(producto.id)) {
+            mostrarMensajeAdmin('No se pudo eliminar "' + producto.nombre + '". Intentá nuevamente.');
+            return;
+        }
+
+        renderizarCatalogo();
+        mostrarMensajeAdmin('Se eliminó "' + producto.nombre + '" del catálogo.');
+    });
 
     const titulo = document.createElement('h3');
     titulo.textContent = producto.nombre;
@@ -410,6 +506,12 @@ function actualizarContadorResultados(cantidad) {
 function renderizarCatalogo() {
     const seccion = document.querySelector('#catalogo');
     const lista = seccion ? seccion.querySelector('ul') : null;
+    const avisoAdmin = document.querySelector('#aviso-admin');
+
+    if (avisoAdmin) {
+        avisoAdmin.hidden = true;
+        avisoAdmin.textContent = '';
+    }
 
     if (!lista) {
         return;
@@ -600,6 +702,15 @@ function obtenerProductosRelacionados(producto) {
 
 function mostrarMensajeDetalle(mensaje) {
     const aviso = document.querySelector('#aviso-detalle');
+    if (!aviso) {
+        return;
+    }
+    aviso.textContent = mensaje;
+    aviso.hidden = false;
+}
+
+function mostrarMensajeAdmin(mensaje) {
+    const aviso = document.querySelector('#aviso-admin');
     if (!aviso) {
         return;
     }
