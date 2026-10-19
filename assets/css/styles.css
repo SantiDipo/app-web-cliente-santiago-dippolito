@@ -329,7 +329,7 @@ img {
     color: #fff;
 }
 
-/* X para eliminar producto (interacción con JS en el futuro) */
+/* X para eliminar producto (elimina el producto del catálogo y de localStorage) */
 #catalogo .icono-eliminar {
     position: absolute;
     top: 0.75rem;
@@ -355,6 +355,22 @@ img {
 #catalogo .icono-eliminar:hover,
 #catalogo .icono-eliminar:focus {
     box-shadow: 0 0 10px 2px var(--rosa-claro);
+}
+
+/* Aviso de estado del panel (ej: producto eliminado) */
+#catalogo p.admin-aviso {
+    display: block;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--verde-oscuro);
+    background-color: var(--rosa-claro);
+    border-radius: 8px;
+    padding: 0.6rem 0.9rem;
+    margin-bottom: 1rem;
+}
+
+#catalogo p.admin-aviso[hidden] {
+    display: none;
 }
 
 
