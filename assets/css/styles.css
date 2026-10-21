@@ -293,8 +293,8 @@ img {
     border-radius: 12px;
 }
 
-/* La tarjeta del admin es un enlace completo hacia el detalle del producto */
-#catalogo .tarjeta-detalle {
+/* La tarjeta del admin es un enlace completo: al hacer clic se entra a editar el producto */
+#catalogo .tarjeta-admin {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -302,6 +302,39 @@ img {
     width: 100%;
     height: 100%;
     color: inherit;
+}
+
+/* Buscador propio del panel de administración (filtra en vivo el catálogo) */
+#catalogo .busqueda-admin {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+}
+
+#catalogo .busqueda-admin input[type="search"] {
+    flex: 1 1 260px;
+    min-width: 0;
+    padding: 0.55rem 0.75rem;
+    border: 2px solid var(--bordo-oscuro);
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-family: inherit;
+    color: var(--verde-oscuro);
+    background-color: var(--blanco);
+}
+
+#catalogo .busqueda-admin input[type="search"]:focus {
+    outline: none;
+    border-color: var(--verde-oscuro);
+    box-shadow: 0 0 0 3px rgba(228, 159, 182, 0.4);
+}
+
+#catalogo .busqueda-admin .resultado-info {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--verde-oscuro);
 }
 
 #catalogo .icono-editar {

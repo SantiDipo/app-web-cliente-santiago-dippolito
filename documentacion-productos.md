@@ -179,24 +179,31 @@ Las tres funciones siguientes **no usan `innerHTML` con interpolación**; constr
 - El orden `h3 → img → p → p` es obligatorio: el CSS (`p:nth-of-type(1)` / `p:nth-of-type(2)`) espera la descripción primero y el precio después.
 
 ### `crearTarjetaProductoAdmin(producto)`
-- Igual que la anterior pero **sin enlace ni form de carrito**, y con dos controles al inicio del `<article>`:
+- Igual que la anterior pero **sin form de carrito**, con dos controles al inicio del `<article>` y el resto de la tarjeta convertida en enlace:
   - `a.icono-editar` → `editar-producto.html` con `aria-label="Editar <nombre>"` e ícono de lápiz.
   - `button.icono-eliminar` con `aria-label="Eliminar <nombre>"` e ícono de equis.
+  - `a.tarjeta-admin` → **`editar-producto.html?id=<id>`**: envuelve el `h3`, la `img` y los dos `p`, así que **clic en la card desde el panel de admin entra a editar el producto** (antes iba a `producto.html?id=…&admin=1`). Es un enlace común, no un handler de `click`, así que funciona con teclado y botón central. **Sólo cambia en modo admin**: `crearTarjetaProducto` (el catálogo público) sigue linkeando al detalle.
 - El botón de eliminar **tiene la interacción cableada**: al hacer clic pide confirmación con `window.confirm` (así un clic equivocado no borra nada), llama a `eliminarProducto(id)` y, si salió bien, vuelve a llamar `renderizarCatalogo()` para repintar la lista sin ese producto y muestra el mensaje de estado con `mostrarMensajeAdmin('Se eliminó "…" del catálogo.')`. Si falla, muestra un mensaje de error sin repintar.
 - Los `innerHTML` de los iconos son SVGs fijos de las constantes (no hay datos de usuario ahí).
 
 ### `crearTarjetaNuevoProducto()`
 - Crea la tarjeta punteada final del admin: `li.nuevo-producto > a[href=nuevo-producto.html] > article > span.mas ("+") + p ("Agregar nuevo producto")`.
 
+### `textoBusquedaAdmin` / `filtrarProductosAdmin(productos)` / `avisarSinResultadosAdmin(cantidad)`
+- **`textoBusquedaAdmin`** (variable `let` del módulo, arranca en `''`): guarda lo tipeado en el buscador del admin para que cada repintado filtre con él. No se pierde al repintar porque el `<input>` está fuera del `<ul>` que se regenera.
+- **`filtrarProductosAdmin(productos)`:** si el texto (normalizado con `normalizarTexto`, sin espacios sobrantes) está vacío devuelve el array tal cual; si no, filtra por `nombre` o `descripcion` — misma lógica que `aplicarFiltros` en `busqueda.html`. Sólo se usa en modo admin.
+- **`avisarSinResultadosAdmin(cantidad)`:** si no quedó ningún producto, escribe con `mostrarMensajeAdmin` un aviso en `#aviso-admin`: *"No encontramos productos que coincidan con \"…\""* cuando el filtro tiene texto, o *"Todavía no hay productos en el catálogo."* si la lista está vacía de origen. Si hay resultados, no hace nada (el aviso ya se limpió al principio del repintado).
+
 ### `actualizarContadorResultados(cantidad)`
-- Si existe el párrafo `.resultado-info` (sólo está en `busqueda.html`), escribe `"Mostrando 4 productos"` o `"Mostrando 1 producto"` según corresponda. Si no existe, no hace nada.
+- Si existe el párrafo `.resultado-info` (en `busqueda.html` **y** en el buscador de `administrador.html`), escribe `"Mostrando 4 productos"` o `"Mostrando 1 producto"` según corresponda. Si no existe, no hace nada.
+- En el admin, como recibe la cantidad **ya filtrada**, el contador baja mientras el admin tipea.
 
 ### `renderizarCatalogo()`
 Función central de pintado. Pasos:
 1. Busca `#catalogo` y su `ul`. Si la página no tiene catálogo, sale. Antes de repintar, **oculta y vacía el aviso `#aviso-admin`** para que un mensaje de estado viejo no quede colgado cuando cambie la lista.
-2. Detecta el modo: si la sección tiene la clase `admin` → **modo administrador**; si además existe `#filtros-busqueda form` → aplica `aplicarFiltros` con la `URLSearchParams` de la ventana.
+2. Detecta el modo: si la sección tiene la clase `admin` → **modo administrador** y aplica `filtrarProductosAdmin(productos)`; si no, y existe `#filtros-busqueda form` → aplica `aplicarFiltros` con la `URLSearchParams` de la ventana.
 3. Vuelca la lista con `lista.replaceChildren(...)` (borra lo anterior y agrega una tarjeta por producto).
-4. En modo admin, agrega al final la tarjeta de "nuevo producto".
+4. En modo admin, agrega al final la tarjeta de "nuevo producto" y llama a `avisarSinResultadosAdmin()` para cubrir el caso de lista vacía.
 5. Actualiza el contador de resultados.
 
 ### `mostrarMensajeAdmin(mensaje)`
@@ -212,6 +219,11 @@ Función central de pintado. Pasos:
 1. Si la página no tiene `#filtros-busqueda form`, sale.
 2. **Precarga** los campos del form desde la querystring (`busqueda`, `categoria`, `orden` y las casillas `disponibilidad`), así el form refleja el estado actual de la URL (por ejemplo cuando llegás desde el buscador del header).
 3. **Intercepta el `submit`:** llama `preventDefault()` (evita el reload), arma una `URLSearchParams` con los valores del form (ignora los vacíos), actualiza la URL con `history.replaceState` y vuelve a llamar `renderizarCatalogo()`. La URL queda compartible y el back/forward siguen teniendo sentido.
+
+### `inicializarBusquedaAdmin()`
+1. Si la página no tiene `.busqueda-admin` ni `#busqueda-admin` (sólo existen en `administrador.html`), sale.
+2. Escucha el **`input`** del campo: copia `campo.value` a `textoBusquedaAdmin` y vuelve a llamar `renderizarCatalogo()`. Es filtrado en vivo: **no recarga ni modifica la URL** (a diferencia de `inicializarFiltrosBusqueda`, cuyos filtros sí se comparten por URL).
+3. Escucha también el **`submit`** del form (Enter dentro del `input[type=search]`) con `preventDefault()`, para que sólo repinte y no recargue la página.
 
 ### `procesarImagen(archivo)`
 Devuelve una **Promise** porque lee archivos de forma asíncrona:
@@ -236,8 +248,10 @@ Devuelve una **Promise** porque lee archivos de forma asíncrona:
 ### `iniciarPagina()`
 Único punto de entrada. Ejecuta en orden:
 1. `renderizarCatalogo()` — pinta la página donde estemos.
-2. `inicializarFiltrosBusqueda()` — conecta los filtros (si existen).
-3. `inicializarFormularioNuevoProducto()` — conecta el form de alta (si existe).
+2. `inicializarFiltrosBusqueda()` — conecta los filtros de `busqueda.html` (si existen).
+3. `inicializarBusquedaAdmin()` — conecta el buscador del panel de administración (si existe).
+4. `inicializarFormularioNuevoProducto()` — conecta el form de alta (si existe).
+5. `inicializarDetalleProducto()` / `inicializarFormularioEditarProducto()` — llenan `producto.html` y `editar-producto.html` (si existen).
 
 Al final del archivo:
 ```js
@@ -258,13 +272,18 @@ Página carga
    └─ iniciarPagina()
         ├─ renderizarCatalogo()
         │    ├─ obtenerCatalogo() = (CATALOGO_BASE + leerProductosNuevos()) − leerProductosEliminados() + ediciones
-        │    ├─ aplicarFiltros()  (sólo en busqueda.html)
+        │    ├─ filtrarProductosAdmin()      (administrador.html)
+        │    ├─ aplicarFiltros()             (busqueda.html)
         │    └─ crearTarjetaProducto() / crearTarjetaProductoAdmin() + crearTarjetaNuevoProducto()
-        ├─ inicializarFiltrosBusqueda()   (busqueda.html)
+        ├─ inicializarFiltrosBusqueda()      (busqueda.html)
+        ├─ inicializarBusquedaAdmin()        (administrador.html)
+        │    └─ input → textoBusquedaAdmin → renderizarCatalogo()
         └─ inicializarFormularioNuevoProducto()   (nuevo-producto.html)
              └─ submit → procesarImagen() → crearProducto() → guardarProductosNuevos()
                                                               └─ redirect a administrador.html
 
+   (admin) clic en el lápiz o en cualquier punto de la tarjeta
+      └─ editar-producto.html?id=<id> → editar producto
    (admin) clic en la X de una tarjeta
       └─ confirm() → eliminarProducto(id)
            ├─ producto nuevo → guardarProductosNuevos()
@@ -272,4 +291,4 @@ Página carga
            └─ limpia las ediciones del id → renderizarCatalogo() + mostrarMensajeAdmin()
 ```
 
-**Archivos que incluyen el script:** `index.html`, `busqueda.html`, `administrador.html` y `nuevo-producto.html` (siempre después de `header-footer.js`). En el resto de las páginas el script no hace nada porque no existe `#catalogo` ni el form de alta.
+**Archivos que incluyen el script:** `index.html`, `busqueda.html`, `administrador.html`, `nuevo-producto.html`, `producto.html` y `editar-producto.html` (siempre después de `header-footer.js`). En el resto de las páginas el script no hace nada porque no existe `#catalogo` ni los formularios.

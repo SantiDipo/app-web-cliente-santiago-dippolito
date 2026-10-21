@@ -460,12 +460,15 @@ function crearTarjetaProductoAdmin(producto) {
     const parrafoPrecio = document.createElement('p');
     parrafoPrecio.textContent = formatearPrecio(producto.precio);
 
-    const enlaceDetalle = document.createElement('a');
-    enlaceDetalle.className = 'tarjeta-detalle';
-    enlaceDetalle.href = 'producto.html?id=' + encodeURIComponent(producto.id) + '&admin=1';
-    enlaceDetalle.append(titulo, imagen, parrafoDescripcion, parrafoPrecio);
+    // Toda la tarjeta (nombre, imagen, descripción y precio) es el enlace a la
+    // edición: en el panel de admin el clic sobre el producto entra a editar,
+    // no a ver el detalle. El lápiz de arriba queda como acceso directo.
+    const enlaceEditarProducto = document.createElement('a');
+    enlaceEditarProducto.className = 'tarjeta-admin';
+    enlaceEditarProducto.href = 'editar-producto.html?id=' + encodeURIComponent(producto.id);
+    enlaceEditarProducto.append(titulo, imagen, parrafoDescripcion, parrafoPrecio);
 
-    articulo.append(enlaceEditar, botonEliminar, enlaceDetalle);
+    articulo.append(enlaceEditar, botonEliminar, enlaceEditarProducto);
     item.append(articulo);
 
     return item;
@@ -495,6 +498,35 @@ function crearTarjetaNuevoProducto() {
     return item;
 }
 
+// Texto tipeado en el buscador del panel de administración. Se mantiene entre
+// repintados para que renderizarCatalogo() filtre con él en modo admin.
+let textoBusquedaAdmin = '';
+
+function filtrarProductosAdmin(productos) {
+    const texto = normalizarTexto(textoBusquedaAdmin).trim();
+
+    if (!texto) {
+        return productos;
+    }
+
+    return productos.filter(producto =>
+        normalizarTexto(producto.nombre).includes(texto) ||
+        normalizarTexto(producto.descripcion).includes(texto)
+    );
+}
+
+function avisarSinResultadosAdmin(cantidad) {
+    if (cantidad > 0) {
+        return;
+    }
+
+    const texto = textoBusquedaAdmin.trim();
+
+    mostrarMensajeAdmin(texto
+        ? 'No encontramos productos que coincidan con "' + texto + '". Probá con otro término.'
+        : 'Todavía no hay productos en el catálogo.');
+}
+
 function actualizarContadorResultados(cantidad) {
     const contador = document.querySelector('.resultado-info');
     if (!contador) {
@@ -520,7 +552,9 @@ function renderizarCatalogo() {
     const modoAdmin = seccion.classList.contains('admin');
     let productos = obtenerCatalogo();
 
-    if (!modoAdmin && document.querySelector('#filtros-busqueda form')) {
+    if (modoAdmin) {
+        productos = filtrarProductosAdmin(productos);
+    } else if (document.querySelector('#filtros-busqueda form')) {
         productos = aplicarFiltros(productos, new URLSearchParams(window.location.search));
     }
 
@@ -530,6 +564,7 @@ function renderizarCatalogo() {
 
     if (modoAdmin) {
         lista.append(crearTarjetaNuevoProducto());
+        avisarSinResultadosAdmin(productos.length);
     }
 
     actualizarContadorResultados(productos.length);
@@ -577,6 +612,29 @@ function inicializarFiltrosBusqueda() {
         const ruta = window.location.pathname + (consulta ? '?' + consulta : '');
         window.history.replaceState({}, '', ruta);
         renderizarCatalogo();
+    });
+}
+
+function inicializarBusquedaAdmin() {
+    const formulario = document.querySelector('.busqueda-admin');
+    const campo = document.querySelector('#busqueda-admin');
+
+    if (!formulario || !campo) {
+        return;
+    }
+
+    const filtrar = () => {
+        textoBusquedaAdmin = campo.value;
+        renderizarCatalogo();
+    };
+
+    // Filtra en vivo mientras el admin tipea (sin recargar ni tocar la URL).
+    campo.addEventListener('input', filtrar);
+
+    // Si se envía con Enter, no debe recargar la página: sólo repinta.
+    formulario.addEventListener('submit', evento => {
+        evento.preventDefault();
+        filtrar();
     });
 }
 
@@ -858,6 +916,7 @@ function inicializarFormularioEditarProducto() {
 function iniciarPagina() {
     renderizarCatalogo();
     inicializarFiltrosBusqueda();
+    inicializarBusquedaAdmin();
     inicializarFormularioNuevoProducto();
     inicializarDetalleProducto();
     inicializarFormularioEditarProducto();
