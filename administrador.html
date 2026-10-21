@@ -20,6 +20,19 @@
 
         <section id="catalogo" class="admin" aria-labelledby="titulo-catalogo">
             <h2 id="titulo-catalogo">Gestión de productos</h2>
+
+            <form class="busqueda-admin" role="search" aria-label="Buscar productos del catálogo">
+                <label for="busqueda-admin" class="sr-only">Buscar producto por nombre o descripción</label>
+                <input
+                    type="search"
+                    id="busqueda-admin"
+                    name="busqueda"
+                    placeholder="Buscar producto para editar… (ej: reloj)"
+                    autocomplete="off"
+                >
+                <span class="resultado-info">Mostrando 10 productos</span>
+            </form>
+
             <p id="aviso-admin" class="admin-aviso" role="status" aria-live="polite" hidden></p>
             <ul></ul>
         </section>
