@@ -30,3 +30,4 @@ Predicciones
 30- Mejoro UI para mejor acceso a ver detalles desde el administrador y tarjetas de ver detalle
 31- Agrego funcionalidad de delete a la pantalla de administracion de productos para borrar productos
 32- Agrego busqueda desde administrador, para filtrar productos en esa pagina
+33- Acoplo la db para todas las funcionalidades que usaban local storage
