@@ -1,99 +1,10 @@
-const CATALOGO_BASE = [
-    {
-        id: 'reloj-clasico',
-        nombre: 'Reloj clásico',
-        descripcion: 'Reloj analógico con correa de cuero.',
-        precio: 49999,
-        imagen: 'https://images.unsplash.com/photo-1777457900943-7fd2f7c42529?q=85&fm=jpg&crop=entropy&cs=srgb&w=800',
-        categoria: 'relojes',
-        stock: 10
-    },
-    {
-        id: 'bolso-de-mano',
-        nombre: 'Bolso de mano',
-        descripcion: 'Bolso de cuero sintético, ideal para uso diario.',
-        precio: 39999,
-        imagen: 'https://images.unsplash.com/photo-1598532163257-ae3c6b2524b6?q=85&fm=jpg&crop=entropy&cs=srgb&w=800',
-        categoria: 'bolsos',
-        stock: 10
-    },
-    {
-        id: 'gorra-deportiva',
-        nombre: 'Gorra deportiva',
-        descripcion: 'Gorra ajustable transpirable.',
-        precio: 12999,
-        imagen: 'https://images.unsplash.com/photo-1588850561407-ed78c282e89b?q=85&fm=jpg&crop=entropy&cs=srgb&w=800',
-        categoria: 'gorras',
-        stock: 10
-    },
-    {
-        id: 'lentes-de-sol',
-        nombre: 'Lentes de sol',
-        descripcion: 'Lentes polarizados con protección UV400.',
-        precio: 25999,
-        imagen: 'https://images.unsplash.com/photo-1584036553516-bf83210aa16c?q=85&fm=jpg&crop=entropy&cs=srgb&w=800',
-        categoria: 'lentes',
-        stock: 10
-    },
-    {
-        id: 'pulsera-de-plata',
-        nombre: 'Pulsera de plata',
-        descripcion: 'Pulsera de plata 925 con diseño minimalista.',
-        precio: 18499,
-        imagen: 'https://images.unsplash.com/photo-1681091638833-b2409f8ee8d8?q=85&fm=jpg&crop=entropy&cs=srgb&w=800',
-        categoria: 'joyeria',
-        stock: 10
-    },
-    {
-        id: 'cinturon-de-cuero',
-        nombre: 'Cinturón de cuero',
-        descripcion: 'Cinturón de cuero genuino con hebilla metálica.',
-        precio: 15999,
-        imagen: 'https://images.unsplash.com/photo-1565251419287-9097aa7299ec?q=85&fm=jpg&crop=entropy&cs=srgb&w=800',
-        categoria: 'accesorios',
-        stock: 10
-    },
-    {
-        id: 'collar-de-plata',
-        nombre: 'Collar de plata',
-        descripcion: 'Collar de plata con colgante de piedra azul.',
-        precio: 24999,
-        imagen: 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?q=85&fm=jpg&crop=entropy&cs=srgb&w=800',
-        categoria: 'joyeria',
-        stock: 10
-    },
-    {
-        id: 'aretes-dorados',
-        nombre: 'Aretes dorados',
-        descripcion: 'Aretes de aro dorados, livianos y elegantes.',
-        precio: 16999,
-        imagen: 'https://images.unsplash.com/photo-1630019852942-f89202989a59?q=85&fm=jpg&crop=entropy&cs=srgb&w=800',
-        categoria: 'joyeria',
-        stock: 10
-    },
-    {
-        id: 'billetera-de-cuero',
-        nombre: 'Billetera de cuero',
-        descripcion: 'Billetera de cuero marrón con varios compartimentos.',
-        precio: 22999,
-        imagen: 'https://images.unsplash.com/photo-1627123424574-724758594e93?q=85&fm=jpg&crop=entropy&cs=srgb&w=800',
-        categoria: 'accesorios',
-        stock: 10
-    },
-    {
-        id: 'set-de-anillos',
-        nombre: 'Set de anillos',
-        descripcion: 'Set de anillos finos con acabado dorado.',
-        precio: 18999,
-        imagen: 'https://images.unsplash.com/photo-1605100804763-247f67b3557e?q=85&fm=jpg&crop=entropy&cs=srgb&w=800',
-        categoria: 'joyeria',
-        stock: 10
-    }
-];
+// Catálogo de productos.
+//
+// El catálogo vive en Supabase (tabla `productos`, ver supabase/schema.sql):
+// las funciones de lectura y escritura de este archivo hablan con la base a
+// través de `clienteSupabase` (assets/js/supabase-client.js). Ya no hay
+// CATALOGO_BASE en el código ni persistencia en localStorage.
 
-const CLAVE_PRODUCTOS_NUEVOS = 'accesorios-shop-productos-nuevos';
-const CLAVE_PRODUCTOS_EDITADOS = 'accesorios-shop-productos-editados';
-const CLAVE_PRODUCTOS_ELIMINADOS = 'accesorios-shop-productos-eliminados';
 const IMAGEN_RESERVA = 'assets/img/2.png';
 const STOCK_INICIAL = 10;
 const ETIQUETAS_CATEGORIA = {
@@ -119,110 +30,123 @@ function formatearPrecio(precio) {
     return '$' + new Intl.NumberFormat('es-AR', { maximumFractionDigits: 2 }).format(precio);
 }
 
-function leerProductosNuevos() {
-    try {
-        const guardados = localStorage.getItem(CLAVE_PRODUCTOS_NUEVOS);
-        return guardados ? JSON.parse(guardados) : [];
-    } catch (error) {
-        console.error('No se pudieron leer los productos guardados:', error);
+// Convierte una fila de la tabla `productos` al formato que usa la app:
+// snake_case de la base → camelCase del JS (sólo cambian las fechas) y
+// precio/stock a número.
+function mapearProductoBD(fila) {
+    return {
+        // El id es un entero (bigint identity); en JS se maneja como string
+        // porque sólo viaja por las URLs (producto.html?id=15) y a los filtros
+        // .eq() de la API les llega igual.
+        id: String(fila.id),
+        nombre: fila.nombre,
+        descripcion: fila.descripcion,
+        precio: Number(fila.precio),
+        imagen: fila.imagen,
+        categoria: fila.categoria,
+        stock: Number(fila.stock),
+        fechaCreacion: fila.fecha_creacion,
+        fechaModificacion: fila.fecha_modificacion
+    };
+}
+
+// Evita fallas con errores confusos si el SDK no cargó o si todavía no se
+// configuró supabase-config.js.
+function clienteListo() {
+    if (typeof clienteSupabase === 'undefined' || !clienteSupabase) {
+        console.error('Supabase no está conectado: revisá assets/js/supabase-config.js.');
+        return false;
+    }
+    return true;
+}
+
+// Único punto de lectura del catálogo: trae todos los productos de la base,
+// los deja en `catalogoEnMemoria` y los devuelve. El pintado lee de memoria
+// (por eso tipear en el buscador del admin no dispara una consulta por
+// tecla); hay que volver a llamarla después de crear, editar o eliminar.
+let catalogoEnMemoria = [];
+
+async function obtenerCatalogo() {
+    if (!clienteListo()) {
+        catalogoEnMemoria = [];
         return [];
     }
-}
 
-function guardarProductosNuevos(productos) {
-    try {
-        localStorage.setItem(CLAVE_PRODUCTOS_NUEVOS, JSON.stringify(productos));
-        return true;
-    } catch (error) {
-        console.error('No se pudieron guardar los productos:', error);
-        return false;
-    }
-}
+    const { data, error } = await clienteSupabase
+        .from(SUPABASE_TABLA_PRODUCTOS)
+        .select('*')
+        .order('fecha_creacion', { ascending: true });
 
-function leerProductosEditados() {
-    try {
-        const guardados = localStorage.getItem(CLAVE_PRODUCTOS_EDITADOS);
-        return guardados ? JSON.parse(guardados) : {};
-    } catch (error) {
-        console.error('No se pudieron leer los productos editados:', error);
-        return {};
-    }
-}
-
-function guardarProductosEditados(editados) {
-    try {
-        localStorage.setItem(CLAVE_PRODUCTOS_EDITADOS, JSON.stringify(editados));
-        return true;
-    } catch (error) {
-        console.error('No se pudieron guardar las ediciones:', error);
-        return false;
-    }
-}
-
-function leerProductosEliminados() {
-    try {
-        const guardados = localStorage.getItem(CLAVE_PRODUCTOS_ELIMINADOS);
-        const ids = guardados ? JSON.parse(guardados) : [];
-        return Array.isArray(ids) ? ids : [];
-    } catch (error) {
-        console.error('No se pudieron leer los productos eliminados:', error);
+    if (error) {
+        console.error('No se pudo leer el catálogo desde Supabase:', error.message);
+        catalogoEnMemoria = [];
         return [];
     }
+
+    catalogoEnMemoria = (data || []).map(mapearProductoBD);
+    return catalogoEnMemoria;
 }
 
-function guardarProductosEliminados(ids) {
-    try {
-        localStorage.setItem(CLAVE_PRODUCTOS_ELIMINADOS, JSON.stringify(ids));
-        return true;
-    } catch (error) {
-        console.error('No se pudieron guardar los productos eliminados:', error);
+async function buscarProducto(id) {
+    const idProducto = String(id || '').trim();
+
+    // El id es numérico (bigint identity): una URL vieja con slug
+    // (?id=reloj-clasico) o cualquier basura no llega a consultar la base.
+    if (!/^\d+$/.test(idProducto)) {
+        return null;
+    }
+
+    if (!clienteListo()) {
+        return null;
+    }
+
+    const { data, error } = await clienteSupabase
+        .from(SUPABASE_TABLA_PRODUCTOS)
+        .select('*')
+        .eq('id', idProducto)
+        .maybeSingle();
+
+    if (error) {
+        console.error('No se pudo leer el producto desde Supabase:', error.message);
+        return null;
+    }
+
+    return data ? mapearProductoBD(data) : null;
+}
+
+async function actualizarProducto(id, cambios) {
+    if (!clienteListo()) {
         return false;
     }
-}
 
-function obtenerCatalogo() {
-    const editados = leerProductosEditados();
-    const eliminados = leerProductosEliminados();
-    const aplicarEdicion = producto => editados[producto.id]
-        ? Object.assign({}, producto, editados[producto.id])
-        : producto;
+    // update + select devuelve las filas afectadas: RLS puede filtrar el
+    // update en silencio (0 filas, sin error), y así se detecta en vez de
+    // devolver un true mentiroso.
+    const { data, error } = await clienteSupabase
+        .from(SUPABASE_TABLA_PRODUCTOS)
+        .update(Object.assign({}, cambios, {
+            fecha_modificacion: new Date().toISOString()
+        }))
+        .eq('id', id)
+        .select('id');
 
-    return CATALOGO_BASE
-        .concat(leerProductosNuevos())
-        .filter(producto => !eliminados.includes(producto.id))
-        .map(aplicarEdicion);
-}
-
-function buscarProducto(id) {
-    return obtenerCatalogo().find(producto => producto.id === id) || null;
-}
-
-function actualizarProducto(id, cambios) {
-    const editados = leerProductosEditados();
-    editados[id] = Object.assign({}, editados[id] || {}, cambios, {
-        fechaModificacion: new Date().toISOString()
-    });
-    return guardarProductosEditados(editados);
-}
-
-function generarIdProducto(nombre, catalogo) {
-    const base = normalizarTexto(nombre)
-        .replace(/[^a-z0-9\s-]/g, '')
-        .trim()
-        .replace(/\s+/g, '-');
-
-    let id = base || 'producto';
-    let intento = 2;
-
-    while (catalogo.some(producto => producto.id === id)) {
-        id = base + '-' + intento;
-        intento += 1;
+    if (error) {
+        console.error('No se pudo actualizar el producto en Supabase:', error.message);
+        return false;
     }
 
-    return id;
+    if (!data || data.length === 0) {
+        console.error(
+            'El cambio no se aplicó: la base no devolvió la fila. ' +
+            'Casi siempre es la política RLS de update faltante (ver supabase/schema.sql).'
+        );
+        return false;
+    }
+
+    return true;
 }
 
-function crearProducto(datos) {
+async function crearProducto(datos) {
     const nombre = String(datos.nombre || '').trim();
     const descripcion = String(datos.descripcion || '').trim();
     const precio = Number(datos.precio);
@@ -233,35 +157,36 @@ function crearProducto(datos) {
         return null;
     }
 
-    // Los ids de productos eliminados siguen "ocupados": si no, crear un
-    // producto con el mismo nombre que uno borrado reviviría al anterior
-    // (obtenerCatalogo() lo seguiría filtrando por estar en la lista de bajas).
-    const idsOcupados = obtenerCatalogo().concat(
-        leerProductosEliminados().map(idEliminado => ({ id: idEliminado }))
-    );
+    if (!clienteListo()) {
+        return null;
+    }
 
     const producto = {
-        id: generarIdProducto(nombre, idsOcupados),
         nombre: nombre,
         descripcion: descripcion,
         precio: precio,
         imagen: datos.imagen || IMAGEN_RESERVA,
         categoria: datos.categoria || 'accesorios',
-        stock: Number.isFinite(stock) && stock >= 0 ? stock : STOCK_INICIAL,
-        fechaCreacion: new Date().toISOString()
+        stock: Number.isFinite(stock) && stock >= 0 ? stock : STOCK_INICIAL
     };
 
-    const productosNuevos = leerProductosNuevos();
-    productosNuevos.push(producto);
+    // Ni `id` ni `fecha_creacion` se mandan: los asigna la base (identity y
+    // now()). El id recién generado vuelve en la fila que devuelve el insert.
+    const { data, error } = await clienteSupabase
+        .from(SUPABASE_TABLA_PRODUCTOS)
+        .insert(producto)
+        .select()
+        .maybeSingle();
 
-    if (!guardarProductosNuevos(productosNuevos)) {
+    if (error) {
+        console.error('No se pudo crear el producto en Supabase:', error.message);
         return null;
     }
 
-    return producto;
+    return mapearProductoBD(data);
 }
 
-function eliminarProducto(id) {
+async function eliminarProducto(id) {
     const idProducto = String(id || '').trim();
 
     if (!idProducto) {
@@ -269,39 +194,26 @@ function eliminarProducto(id) {
         return false;
     }
 
-    const esBase = CATALOGO_BASE.some(producto => producto.id === idProducto);
-    const productosNuevos = leerProductosNuevos();
-    const indiceNuevo = productosNuevos.findIndex(producto => producto.id === idProducto);
-
-    if (indiceNuevo >= 0) {
-        // Los productos creados por el admin se borran del todo.
-        productosNuevos.splice(indiceNuevo, 1);
-        if (!guardarProductosNuevos(productosNuevos)) {
-            return false;
-        }
-    } else if (esBase) {
-        // El catálogo base vive en el código, así que se registra la baja
-        // para que obtenerCatalogo() lo deje de mostrar.
-        const eliminados = leerProductosEliminados();
-
-        if (!eliminados.includes(idProducto)) {
-            eliminados.push(idProducto);
-            if (!guardarProductosEliminados(eliminados)) {
-                return false;
-            }
-        }
-    } else {
-        console.error('No existe un producto con id:', idProducto);
+    if (!clienteListo()) {
         return false;
     }
 
-    // Las ediciones del producto ya no aplican a nada.
-    const editados = leerProductosEditados();
-    if (editados[idProducto]) {
-        delete editados[idProducto];
-        if (!guardarProductosEditados(editados)) {
-            console.error('El producto se eliminó, pero no se pudieron limpiar sus ediciones.');
-        }
+    // delete + select devuelve las filas borradas: así se distingue
+    // "no existía ese id" (data vacío) de un fallo de la base (error).
+    const { data, error } = await clienteSupabase
+        .from(SUPABASE_TABLA_PRODUCTOS)
+        .delete()
+        .eq('id', idProducto)
+        .select('id');
+
+    if (error) {
+        console.error('No se pudo eliminar el producto de Supabase:', error.message);
+        return false;
+    }
+
+    if (!data || data.length === 0) {
+        console.error('No existe un producto con id:', idProducto);
+        return false;
     }
 
     return true;
@@ -427,7 +339,7 @@ function crearTarjetaProductoAdmin(producto) {
     botonEliminar.title = 'Eliminar producto';
     botonEliminar.setAttribute('aria-label', 'Eliminar ' + producto.nombre);
     botonEliminar.innerHTML = ICONO_ELIMINAR;
-    botonEliminar.addEventListener('click', () => {
+    botonEliminar.addEventListener('click', async () => {
         const confirmado = window.confirm(
             '¿Eliminar "' + producto.nombre + '" del catálogo? Esta acción no se puede deshacer.'
         );
@@ -436,11 +348,14 @@ function crearTarjetaProductoAdmin(producto) {
             return;
         }
 
-        if (!eliminarProducto(producto.id)) {
+        // Espera a que la base confirme y recién ahí vuelve a leer y repinta,
+        // para que el producto no quede "revivido" si la operación falla.
+        if (!await eliminarProducto(producto.id)) {
             mostrarMensajeAdmin('No se pudo eliminar "' + producto.nombre + '". Intentá nuevamente.');
             return;
         }
 
+        await obtenerCatalogo();
         renderizarCatalogo();
         mostrarMensajeAdmin('Se eliminó "' + producto.nombre + '" del catálogo.');
     });
@@ -550,7 +465,7 @@ function renderizarCatalogo() {
     }
 
     const modoAdmin = seccion.classList.contains('admin');
-    let productos = obtenerCatalogo();
+    let productos = catalogoEnMemoria.slice();
 
     if (modoAdmin) {
         productos = filtrarProductosAdmin(productos);
@@ -700,7 +615,7 @@ function inicializarFormularioNuevoProducto() {
             }
         }
 
-        const producto = crearProducto({
+        const producto = await crearProducto({
             nombre: formulario.querySelector('#nombre').value,
             descripcion: formulario.querySelector('#descripcion').value,
             precio: formulario.querySelector('#precio').value,
@@ -747,8 +662,8 @@ function crearTarjetaRelacionado(producto, esAdmin) {
     return item;
 }
 
-function obtenerProductosRelacionados(producto) {
-    const catalogo = obtenerCatalogo();
+async function obtenerProductosRelacionados(producto) {
+    const catalogo = await obtenerCatalogo();
     const mismaCategoria = catalogo.filter(
         otro => otro.id !== producto.id && otro.categoria === producto.categoria
     );
@@ -776,7 +691,7 @@ function mostrarMensajeAdmin(mensaje) {
     aviso.hidden = false;
 }
 
-function inicializarDetalleProducto() {
+async function inicializarDetalleProducto() {
     const contenedor = document.querySelector('#detalle-producto');
     if (!contenedor) {
         return;
@@ -785,7 +700,7 @@ function inicializarDetalleProducto() {
     const parametros = new URLSearchParams(window.location.search);
     const id = parametros.get('id');
     const esAdmin = parametros.get('admin') === '1';
-    const producto = id ? buscarProducto(id) : null;
+    const producto = id ? await buscarProducto(id) : null;
 
     if (!producto) {
         mostrarMensajeDetalle(
@@ -846,14 +761,14 @@ function inicializarDetalleProducto() {
 
     const relacionados = document.querySelector('#relacionados');
     const lista = relacionados.querySelector('ul');
-    const productosRelacionados = obtenerProductosRelacionados(producto);
+    const productosRelacionados = await obtenerProductosRelacionados(producto);
     lista.replaceChildren(...productosRelacionados.map(relacionado =>
         crearTarjetaRelacionado(relacionado, esAdmin)
     ));
     relacionados.hidden = productosRelacionados.length === 0;
 }
 
-function inicializarFormularioEditarProducto() {
+async function inicializarFormularioEditarProducto() {
     const formulario = document.querySelector('#editar-producto form');
 
     if (!formulario) {
@@ -861,7 +776,7 @@ function inicializarFormularioEditarProducto() {
     }
 
     const id = new URLSearchParams(window.location.search).get('id');
-    const producto = id ? buscarProducto(id) : null;
+    const producto = id ? await buscarProducto(id) : null;
 
     if (!producto) {
         window.location.href = 'administrador.html';
@@ -895,7 +810,7 @@ function inicializarFormularioEditarProducto() {
             }
         }
 
-        const actualizado = actualizarProducto(producto.id, {
+        const actualizado = await actualizarProducto(producto.id, {
             nombre: formulario.querySelector('#nombre').value.trim(),
             descripcion: formulario.querySelector('#descripcion').value.trim(),
             precio: Number(formulario.querySelector('#precio').value),
@@ -913,13 +828,16 @@ function inicializarFormularioEditarProducto() {
     });
 }
 
-function iniciarPagina() {
+async function iniciarPagina() {
+    // Trae el catálogo de la base una vez y a partir de ahí el pintado
+    // (renderizarCatalogo) es síncrono sobre la memoria.
+    await obtenerCatalogo();
     renderizarCatalogo();
     inicializarFiltrosBusqueda();
     inicializarBusquedaAdmin();
     inicializarFormularioNuevoProducto();
-    inicializarDetalleProducto();
-    inicializarFormularioEditarProducto();
+    await inicializarDetalleProducto();
+    await inicializarFormularioEditarProducto();
 }
 
 if (document.readyState === 'loading') {
