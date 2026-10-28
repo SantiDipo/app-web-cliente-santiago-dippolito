@@ -87,6 +87,7 @@ Todas las funciones de esta sección son **`async`** y devuelven Promises, porqu
       descripcion: 'Gorra de algodón.',
       precio: 9999.5,
       categoria: 'gorras',
+      stock: 25,
       imagen: 'https://…/gorra.jpg'
   });
   // producto.id === '11' (el id lo asignó la base con identity)
@@ -143,6 +144,7 @@ Las funciones siguientes **no usan `innerHTML` con interpolación**; construyen 
       └─ button "Agregar al carrito"
   ```
 - El orden `h3 → img → p → p` es obligatorio: el CSS (`p:nth-of-type(1)` / `p:nth-of-type(2)`) espera la descripción primero y el precio después.
+- El `submit` del form está **interceptado**: en vez de navegar a `carrito.html`, hace `preventDefault()`, llama a `agregarAlCarrito(producto, 1)` (de `assets/js/carrito.js`, que guarda en localStorage) y a `avisarAgregado(boton)`, que muestra "Agregado ✓" un instante. El `action` queda como respaldo si el carrito no está cargado.
 
 ### `crearTarjetaProductoAdmin(producto)`
 - Igual que la anterior pero **sin form de carrito**, con dos controles al inicio del `<article>` y el resto de la tarjeta convertida en enlace:
@@ -202,7 +204,7 @@ Devuelve una **Promise** porque lee archivos de forma asíncrona:
 2. Escucha el `submit` con un handler `async`:
    - `preventDefault()` para que no recargue la página.
    - Toma el archivo del `input#imagen` y, si hay, lo pasa por `procesarImagen`. Si falla, muestra `alert` y aborta.
-   - **`await crearProducto(...)`** con `nombre`, `descripcion`, `precio`, `categoria` y la imagen procesada.
+   - **`await crearProducto(...)`** con `nombre`, `descripcion`, `precio`, `categoria`, **`stock`** (campo "Stock inicial" del form) y la imagen procesada. Es el único campo que define cuántas unidades se dan de alta: si queda vacío o trae basura, `crearProducto` cae en `STOCK_INICIAL` (10).
    - Si devuelve `null` → `alert` de error y aborta.
    - Si sale bien → `window.location.href = 'administrador.html'`, donde el admin ve recién creado su producto (esa página vuelve a leer el catálogo de la base al cargar).
 
@@ -210,8 +212,9 @@ Devuelve una **Promise** porque lee archivos de forma asíncrona:
 1. Si la página no tiene `#detalle-producto`, sale.
 2. Lee el `id` de la URL y hace **`await buscarProducto(id)`** (consulta directa a la fila). Si no existe → mensaje de "No encontramos el producto…" con `mostrarMensajeDetalle` y sale.
 3. Llena título, miga, imagen, nombre, precio, descripción, características (categoría, id, fechas), stock y el formulario de compra (deshabilitado si `stock <= 0`).
-4. Muestra/oculta los accesos de admin (`#enlace-volver-admin`, `#enlace-editar-admin`) según el parámetro `admin=1`.
-5. **`await obtenerProductosRelacionados(producto)`** (primero los de la misma categoría, después el resto, hasta 3) y pinta las tarjetas en `#relacionados`.
+4. **Intercepta el `submit` del form de compra** (`#detalle-formulario`): `preventDefault()`, llama `agregarAlCarrito(producto, campoCantidad.value)` (guarda la cantidad elegida en localStorage) y `avisarAgregado(botonAgregar)`. No navega a `carrito.html`.
+5. Muestra/oculta los accesos de admin (`#enlace-volver-admin`, `#enlace-editar-admin`) según el parámetro `admin=1`.
+6. **`await obtenerProductosRelacionados(producto)`** (primero los de la misma categoría, después el resto, hasta 3) y pinta las tarjetas en `#relacionados`.
 
 ### `inicializarFormularioEditarProducto()`
 1. Si la página no tiene `#editar-producto form`, sale.

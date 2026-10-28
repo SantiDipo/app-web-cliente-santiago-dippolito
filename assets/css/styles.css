@@ -77,6 +77,26 @@ img {
     color: var(--bordo-oscuro);
 }
 
+/* Contador de unidades del carrito en el navbar (lo pinta assets/js/carrito.js) */
+.contador-carrito {
+    display: inline-block;
+    min-width: 1.25rem;
+    padding: 0 0.35rem;
+    margin-left: 0.25rem;
+    border-radius: 999px;
+    background-color: var(--rosa-claro);
+    color: var(--bordo-oscuro);
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-align: center;
+}
+
+.navbar a:hover .contador-carrito,
+.navbar a:focus .contador-carrito {
+    background-color: var(--bordo-oscuro);
+    color: var(--rosa-claro);
+}
+
 /* ---------- Galería de fotos decorativa ---------- */
 #galeria-fotos {
     width: 100%;
@@ -676,6 +696,17 @@ img {
     color: var(--bordo-oscuro);
 }
 
+.aviso-detalle a {
+    color: var(--bordo-oscuro);
+    font-weight: 700;
+    text-decoration: underline;
+}
+
+.aviso-detalle a:hover,
+.aviso-detalle a:focus {
+    color: var(--verde-oscuro);
+}
+
 .acciones-detalle {
     display: flex;
     flex-wrap: wrap;
@@ -874,9 +905,14 @@ img {
 }
 
 .eliminar {
+    background: none;
+    border: none;
+    padding: 0;
+    font: inherit;
     font-weight: 600;
     font-size: 0.85rem;
     color: var(--bordo-oscuro);
+    cursor: pointer;
 }
 
 .eliminar:hover,
@@ -948,6 +984,18 @@ img {
 #resumen-carrito button:hover,
 #resumen-carrito button:focus {
     background-color: var(--verde-oscuro);
+}
+
+#resumen-carrito button:disabled {
+    background-color: var(--rosa-claro);
+    color: var(--verde-oscuro);
+    cursor: not-allowed;
+}
+
+.nota-finalizar {
+    font-size: 0.8rem;
+    color: var(--verde-oscuro);
+    text-align: center;
 }
 
 .seguir-comprando {

@@ -117,3 +117,82 @@ from (values
     ('Set de anillos', 'Set de anillos finos con acabado dorado.', 18999, 'https://images.unsplash.com/photo-1605100804763-247f67b3557e?q=85&fm=jpg&crop=entropy&cs=srgb&w=800', 'joyeria', 10)
 ) as v (nombre, descripcion, precio, imagen, categoria, stock)
 where not exists (select 1 from public.productos);
+
+-- ============================================================
+-- 4) RPC: descuento atómico de stock al finalizar la compra
+-- ============================================================
+-- assets/js/carrito.js la llama desde carrito.html con:
+--   clienteSupabase.rpc('descontar_stock_carrito', { items: [...] })
+--
+-- Recibe un array JSON con la forma [{ "id": 12, "cantidad": 2 }, ...] y
+-- descuenta el stock de todos los productos en UNA sola transacción. Si a
+-- alguno le falta stock, no se descuenta nada (todo o nada) y la función
+-- lanza un error cuyo DETAIL trae el detalle en JSON, para que el frontend
+-- pueda mostrar qué productos quedaron cortos.
+--
+-- Dos motivos para hacerlo en la base y no desde el navegador:
+--   1. Atomicidad: un select y un update separados dejan una ventana donde
+--      dos compras simultáneas pueden vender las mismas unidades.
+--   2. Con security definer el descuento no depende de las políticas RLS de
+--      la tabla, y sólo puede descontar (no permite editar nada más). El
+--      set search_path = public evita ataques por esquemas.
+--
+-- Si ya corriste este archivo antes, alcanza con pegar y ejecutar esta
+-- sección 4 en el SQL Editor (es "create or replace", no toca datos).
+create or replace function public.descontar_stock_carrito(items jsonb)
+returns jsonb
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+    item jsonb;
+    stock_restante integer;
+    faltantes jsonb := '[]'::jsonb;
+    resultado jsonb := '[]'::jsonb;
+begin
+    -- 4.1 Primera pasada: valida stock sin modificar nada.
+    for item in select * from jsonb_array_elements(items) loop
+        if (item ->> 'cantidad')::integer <= 0 then
+            raise exception 'Cantidad inválida para el producto %.', item ->> 'id';
+        end if;
+
+        if not exists (
+            select 1 from public.productos
+            where id = (item ->> 'id')::bigint
+              and stock >= (item ->> 'cantidad')::integer
+        ) then
+            faltantes := faltantes || jsonb_build_object(
+                'id', (item ->> 'id')::bigint,
+                'pedido', (item ->> 'cantidad')::integer,
+                'disponible', (select coalesce(max(stock), 0)
+                               from public.productos
+                               where id = (item ->> 'id')::bigint)
+            );
+        end if;
+    end loop;
+
+    if jsonb_array_length(faltantes) > 0 then
+        raise exception 'No hay stock suficiente para todos los productos del carrito.'
+            using detail = faltantes::text;
+    end if;
+
+    -- 4.2 Segunda pasada: descuenta y devuelve el stock restante de cada uno.
+    for item in select * from jsonb_array_elements(items) loop
+        update public.productos
+           set stock = stock - (item ->> 'cantidad')::integer,
+               fecha_modificacion = now()
+         where id = (item ->> 'id')::bigint
+        returning stock into stock_restante;
+
+        resultado := resultado || jsonb_build_object(
+            'id', (item ->> 'id')::bigint,
+            'stock', stock_restante
+        );
+    end loop;
+
+    return resultado;
+end;
+$$;
+
+grant execute on function public.descontar_stock_carrito(jsonb) to anon, authenticated;

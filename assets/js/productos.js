@@ -316,6 +316,18 @@ function crearTarjetaProducto(producto) {
     boton.type = 'submit';
     boton.textContent = 'Agregar al carrito';
 
+    // En vez de navegar a carrito.html, el click guarda el producto en
+    // localStorage (ver assets/js/carrito.js) y deja al usuario en la misma
+    // página, avisando con un breve cambio de texto en el botón.
+    formulario.addEventListener('submit', evento => {
+        evento.preventDefault();
+
+        if (typeof agregarAlCarrito === 'function') {
+            agregarAlCarrito(producto, 1);
+            avisarAgregado(boton);
+        }
+    });
+
     formulario.append(etiqueta, inputOculto, boton);
     item.append(enlace, formulario);
 
@@ -620,6 +632,7 @@ function inicializarFormularioNuevoProducto() {
             descripcion: formulario.querySelector('#descripcion').value,
             precio: formulario.querySelector('#precio').value,
             categoria: formulario.querySelector('#categoria').value,
+            stock: formulario.querySelector('#stock').value,
             imagen: imagen
         });
 
@@ -748,9 +761,21 @@ async function inicializarDetalleProducto() {
     const campoCantidad = document.querySelector('#cantidad');
     campoCantidad.max = Math.max(producto.stock, 1);
     const formulario = document.querySelector('#detalle-formulario');
+    const botonAgregar = formulario.querySelector('button[type="submit"]');
     if (producto.stock <= 0) {
-        formulario.querySelector('button[type="submit"]').disabled = true;
+        botonAgregar.disabled = true;
     }
+
+    // Mismo comportamiento que en el catálogo: el submit guarda el producto
+    // (con la cantidad elegida) en localStorage y no navega a carrito.html.
+    formulario.addEventListener('submit', evento => {
+        evento.preventDefault();
+
+        if (typeof agregarAlCarrito === 'function') {
+            agregarAlCarrito(producto, campoCantidad.value);
+            avisarAgregado(botonAgregar);
+        }
+    });
 
     document.querySelector('#enlace-volver-admin').hidden = !esAdmin;
     const enlaceEditar = document.querySelector('#enlace-editar-admin');

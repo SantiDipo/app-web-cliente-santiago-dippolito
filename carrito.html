@@ -20,6 +20,10 @@
 
         <h1>Tu carrito de compras</h1>
 
+        <p class="aviso-detalle" id="carrito-vacio" hidden>
+            Tu carrito está vacío. <a href="index.html#catalogo">Seguí comprando</a> para agregar productos.
+        </p>
+
         <section id="items-carrito" aria-labelledby="titulo-items">
             <h2 id="titulo-items" class="sr-only">Productos en el carrito</h2>
 
@@ -34,62 +38,7 @@
                         <th scope="col"><span class="sr-only">Acciones</span></th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr>
-                        <td data-titulo="Producto">
-                            <img src="https://images.unsplash.com/photo-1777457900943-7fd2f7c42529?q=85&fm=jpg&crop=entropy&cs=srgb&w=800" alt="Imagen del reloj clásico" width="64" height="64">
-                            <a href="producto.html">Reloj clásico</a>
-                        </td>
-                        <td data-titulo="Precio">$49.999</td>
-                        <td data-titulo="Cantidad">
-                            <form action="carrito.html" method="get">
-                                <label class="sr-only" for="cantidad-reloj">Cantidad de relojes clásicos</label>
-                                <input type="number" id="cantidad-reloj" name="cantidad-reloj" value="1" min="1" max="10">
-                                <button type="submit">Actualizar</button>
-                            </form>
-                        </td>
-                        <td data-titulo="Subtotal">$49.999</td>
-                        <td data-titulo="Acciones">
-                            <a class="eliminar" href="carrito.html">Eliminar</a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td data-titulo="Producto">
-                            <img src="https://images.unsplash.com/photo-1588850561407-ed78c282e89b?q=85&fm=jpg&crop=entropy&cs=srgb&w=800" alt="Imagen de la gorra deportiva" width="64" height="64">
-                            <a href="producto.html">Gorra deportiva</a>
-                        </td>
-                        <td data-titulo="Precio">$12.999</td>
-                        <td data-titulo="Cantidad">
-                            <form action="carrito.html" method="get">
-                                <label class="sr-only" for="cantidad-gorra">Cantidad de gorras deportivas</label>
-                                <input type="number" id="cantidad-gorra" name="cantidad-gorra" value="2" min="1" max="10">
-                                <button type="submit">Actualizar</button>
-                            </form>
-                        </td>
-                        <td data-titulo="Subtotal">$25.998</td>
-                        <td data-titulo="Acciones">
-                            <a class="eliminar" href="carrito.html">Eliminar</a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td data-titulo="Producto">
-                            <img src="https://images.unsplash.com/photo-1598532163257-ae3c6b2524b6?q=85&fm=jpg&crop=entropy&cs=srgb&w=800" alt="Imagen del bolso de mano" width="64" height="64">
-                            <a href="producto.html">Bolso de mano</a>
-                        </td>
-                        <td data-titulo="Precio">$39.999</td>
-                        <td data-titulo="Cantidad">
-                            <form action="carrito.html" method="get">
-                                <label class="sr-only" for="cantidad-bolso">Cantidad de bolsos de mano</label>
-                                <input type="number" id="cantidad-bolso" name="cantidad-bolso" value="1" min="1" max="10">
-                                <button type="submit">Actualizar</button>
-                            </form>
-                        </td>
-                        <td data-titulo="Subtotal">$39.999</td>
-                        <td data-titulo="Acciones">
-                            <a class="eliminar" href="carrito.html">Eliminar</a>
-                        </td>
-                    </tr>
-                </tbody>
+                <tbody></tbody>
             </table>
         </section>
 
@@ -97,8 +46,8 @@
             <h2 id="titulo-resumen">Resumen de la compra</h2>
             <dl>
                 <div>
-                    <dt>Productos (4)</dt>
-                    <dd>$115.996</dd>
+                    <dt id="resumen-unidades">Productos (0)</dt>
+                    <dd id="resumen-subtotal">$0</dd>
                 </div>
                 <div>
                     <dt>Envío</dt>
@@ -106,19 +55,25 @@
                 </div>
                 <div class="total">
                     <dt>Total</dt>
-                    <dd>$115.996</dd>
+                    <dd id="resumen-total">$0</dd>
                 </div>
             </dl>
 
-            <form action="#" method="post">
-                <button type="submit">Finalizar compra</button>
-            </form>
+            <p class="aviso-detalle" id="aviso-finalizacion" hidden></p>
+
+            <button type="button" id="finalizar-compra">Finalizar compra</button>
+
+            <p class="nota-finalizar">Al finalizar se descuenta el stock y se abre WhatsApp con el detalle de tu pedido.</p>
 
             <a class="seguir-comprando" href="index.html#catalogo">Seguir comprando</a>
         </aside>
     </main>
 
     <footer></footer>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="assets/js/supabase-config.js"></script>
+    <script src="assets/js/supabase-client.js"></script>
     <script src="assets/js/header-footer.js"></script>
+    <script src="assets/js/carrito.js"></script>
 </body>
 </html>
